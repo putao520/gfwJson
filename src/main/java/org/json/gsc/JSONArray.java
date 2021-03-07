@@ -2,9 +2,9 @@
  * $Id: JSONArray.java,v 1.1 2006/04/15 14:10:48 platform Exp $
  * Created on 2006-4-10
  */
-package org.json.simple;
+package org.json.gsc;
 
-import org.json.simple.parser.JSONParser;
+import org.json.gsc.parser.JSONParser;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -44,7 +44,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	 *
 	 * @param collection
 	 * @param out
-	 * @see org.json.simple.JSONValue#writeJSONString(Object, Writer)
+	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
 	 */
 	public static void writeJSONString(Collection collection, Writer out) throws IOException {
 		if (collection == null) {
@@ -147,7 +147,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	 * Convert a list to JSON text. The result is a JSON array. 
 	 * If this list is also a JSONAware, JSONAware specific behaviours will be omitted at this top level.
 	 *
-	 * @see org.json.simple.JSONValue#toJSONString(Object)
+	 * @see org.json.gsc.JSONValue#toJSONString(Object)
 	 *
 	 * @param collection
 	 * @return JSON text, or "null" if list is null.

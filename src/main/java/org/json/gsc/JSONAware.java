@@ -1,4 +1,4 @@
-package org.json.simple;
+package org.json.gsc;
 
 /**
  * Beans that support customized output of JSON text shall implement this interface.  

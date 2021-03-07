@@ -1,14 +1,13 @@
-package org.json.simple;
+package org.json.gsc;
+
+import junit.framework.TestCase;
+import org.json.gsc.parser.JSONParser;
+import org.json.gsc.parser.ParseException;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
-
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import junit.framework.TestCase;
 
 public class JSONArrayTest extends TestCase {
 

@@ -2,36 +2,29 @@
  * $Id: Test.java,v 1.1 2006/04/15 14:40:06 platform Exp $
  * Created on 2006-4-15
  */
-package org.json.simple;
+package org.json.gsc;
+
+import junit.framework.TestCase;
+import org.json.gsc.parser.ContainerFactory;
+import org.json.gsc.parser.ContentHandler;
+import org.json.gsc.parser.JSONParser;
+import org.json.gsc.parser.ParseException;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.TestCase;
-
-import org.json.simple.parser.ContainerFactory;
-import org.json.simple.parser.ContentHandler;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import java.util.*;
 
 /**
- * @author FangYidong<fangyidong@yahoo.com.cn>
+ * @author FangYidong<fangyidong @ yahoo.com.cn>
  */
-public class Test extends TestCase{
+public class Test extends TestCase {
 
-	public void testDecode() throws Exception{
+	public void testDecode() throws Exception {
 		System.out.println("=======decode=======");
-		
-		String s="[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
-		Object obj=JSONValue.parse(s);
-		JSONArray array=(JSONArray)obj;
+
+		String s = "[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
+		Object obj = JSONValue.parse(s);
+		JSONArray array = (JSONArray) obj;
 		System.out.println("======the 2nd element of array======");
 		System.out.println(array.get(1));
 		System.out.println();
@@ -248,45 +241,45 @@ public class Test extends TestCase{
                 return true;
             }
 
-            public boolean startObjectEntry(String key) throws ParseException, IOException {
-                this.key = key;
-                return true;
-            }
-            
-            public boolean endArray() throws ParseException, IOException {
-                return false;
-            }
+			public boolean startObjectEntry(String key) throws ParseException, IOException {
+				this.key = key;
+				return true;
+			}
 
-            public boolean endObject() throws ParseException, IOException {
-                return true;
-            }
+			public boolean endArray() throws ParseException, IOException {
+				return false;
+			}
 
-            public boolean endObjectEntry() throws ParseException, IOException {
-                return true;
-            }
-        };
-        
-        s = "{\"first\": 123, \"second\": [{\"k1\":{\"id\":\"id1\"}}, 4, 5, 6, {\"id\": 123}], \"third\": 789, \"id\": null}";
-        parser.reset();
-        KeyFinder keyFinder = new KeyFinder();
-        keyFinder.setMatchKey("id");
-        int i = 0;
-        try{
-            while(!keyFinder.isEnd()){
-                parser.parse(s, keyFinder, true);
-                if(keyFinder.isFound()){
-                    i++;
-                    keyFinder.setFound(false);
-                    System.out.println("found id:");
-                    System.out.println(keyFinder.getValue());
-                    if(i == 1)
-                        assertEquals("id1", keyFinder.getValue());
-                    if(i == 2){
-                        assertTrue(keyFinder.getValue() instanceof Number);
-                        assertEquals("123", String.valueOf(keyFinder.getValue()));
-                    }
-                    if(i == 3)
-                        assertTrue(null == keyFinder.getValue());
+			public boolean endObject() throws ParseException, IOException {
+				return true;
+			}
+
+			public boolean endObjectEntry() throws ParseException, IOException {
+				return true;
+			}
+		}
+
+		s = "{\"first\": 123, \"second\": [{\"k1\":{\"id\":\"id1\"}}, 4, 5, 6, {\"id\": 123}], \"third\": 789, \"id\": null}";
+		parser.reset();
+		KeyFinder keyFinder = new KeyFinder();
+		keyFinder.setMatchKey("id");
+		int i = 0;
+		try {
+			while (!keyFinder.isEnd()) {
+				parser.parse(s, keyFinder, true);
+				if (keyFinder.isFound()) {
+					i++;
+					keyFinder.setFound(false);
+					System.out.println("found id:");
+					System.out.println(keyFinder.getValue());
+					if (i == 1)
+						assertEquals("id1", keyFinder.getValue());
+					if (i == 2) {
+						assertTrue(keyFinder.getValue() instanceof Number);
+						assertEquals("123", String.valueOf(keyFinder.getValue()));
+					}
+					if (i == 3)
+						assertTrue(null == keyFinder.getValue());
                 }
             }
         }

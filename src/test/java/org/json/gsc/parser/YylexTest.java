@@ -1,22 +1,22 @@
-package org.json.simple.parser;
+package org.json.gsc.parser;
+
+import junit.framework.TestCase;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import junit.framework.TestCase;
-
 public class YylexTest extends TestCase {
 
-	public void testYylex() throws Exception{
-		String s="\"\\/\"";
+	public void testYylex() throws Exception {
+		String s = "\"\\/\"";
 		System.out.println(s);
 		StringReader in = new StringReader(s);
-		Yylex lexer=new Yylex(in);
-		Yytoken token=lexer.yylex();
-		assertEquals(Yytoken.TYPE_VALUE,token.type);
-		assertEquals("/",token.value);
-		
-		s="\"abc\\/\\r\\b\\n\\t\\f\\\\\"";
+		Yylex lexer = new Yylex(in);
+		Yytoken token = lexer.yylex();
+		assertEquals(Yytoken.TYPE_VALUE, token.type);
+		assertEquals("/", token.value);
+
+		s = "\"abc\\/\\r\\b\\n\\t\\f\\\\\"";
 		System.out.println(s);
 		in = new StringReader(s);
 		lexer=new Yylex(in);
@@ -40,8 +40,8 @@ public class YylexTest extends TestCase {
 		in = new StringReader(s);
 		lexer=new Yylex(in);
 		ParseException err=null;
-		try{
-			token=lexer.yylex();
+		try {
+			lexer.yylex();
 		}
 		catch(ParseException e){
 			err=e;

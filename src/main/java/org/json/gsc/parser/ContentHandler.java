@@ -1,4 +1,4 @@
-package org.json.simple.parser;
+package org.json.gsc.parser;
 
 import java.io.IOException;
 

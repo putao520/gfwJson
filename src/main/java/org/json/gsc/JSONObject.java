@@ -2,9 +2,9 @@
  * $Id: JSONObject.java,v 1.1 2006/04/15 14:10:48 platform Exp $
  * Created on 2006-4-10
  */
-package org.json.simple;
+package org.json.gsc;
 
-import org.json.simple.parser.JSONParser;
+import org.json.gsc.parser.JSONParser;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -45,7 +45,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 *
 	 * @param map
 	 * @param out
-	 * @see org.json.simple.JSONValue#writeJSONString(Object, Writer)
+	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
 	 */
 	public static void writeJSONString(Map map, Writer out) throws IOException {
 		if (map == null) {
@@ -80,7 +80,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 * Convert a map to JSON text. The result is a JSON object. 
 	 * If this map is also a JSONAware, JSONAware specific behaviours will be omitted at this top level.
 	 *
-	 * @see org.json.simple.JSONValue#toJSONString(Object)
+	 * @see org.json.gsc.JSONValue#toJSONString(Object)
 	 *
 	 * @param map
 	 * @return JSON text, or "null" if map is null.
@@ -127,7 +127,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
 	 * It's the same as JSONValue.escape() only for compatibility here.
 	 *
-	 * @see org.json.simple.JSONValue#escape(String)
+	 * @see org.json.gsc.JSONValue#escape(String)
 	 *
 	 * @param s
 	 * @return
@@ -372,25 +372,8 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return this.link(field, 0);
 	}
 
-	public JSONObject link(String field, int idx) {
-		JSONArray rArray = this.getJsonArray(field + "&Array");
-		if (JSONArray.isInvaild(rArray)) {
-			return this;
-		} else {
-			JSONObject o = (JSONObject) rArray.get(idx);
-			if (isInvaild(o)) {
-				return this;
-			} else {
-				Iterator var5 = o.keySet().iterator();
-
-				while (var5.hasNext()) {
-					String key = (String) var5.next();
-					this.put(field + "#" + key, o.get(key));
-				}
-
-				return this;
-			}
-		}
+	public static JSONObject putx(String key, Object val) {
+		return (new JSONObject()).puts(key, val);
 	}
 
 	public static final JSONObject toJSON(String str) {
@@ -511,27 +494,44 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return this;
 	}
 
-	public <T> HashMap<String,T> toHashMap(){
-		HashMap<String,T> rhm = new HashMap<>();
-		for(String key : this.keySet()){
-			rhm.put(key, (T)this.get(key));
+	public <T> HashMap<String, T> toHashMap() {
+		HashMap<String, T> rhm = new HashMap<>();
+		for (String key : this.keySet()) {
+			rhm.put(key, (T) this.get(key));
 		}
 		return rhm;
 	}
 
-	public static final JSONObject putx(String key,Object val){
-		return (new JSONObject()).puts(key, val);
-	}
-
-	public static final boolean isInvaild(JSONObject object){
+	public static boolean isInvalided(JSONObject object) {
 		return object == null || object.size() == 0;
 	}
 
-	public static final <T extends HashMap> JSONObject convert(T in){
+	public static <T extends HashMap> JSONObject convert(T in) {
 		JSONObject myJson = new JSONObject();
-		for(Object key : in.keySet()){
-			myJson.put((String)key, in.get(key));
+		for (Object key : in.keySet()) {
+			myJson.put((String) key, in.get(key));
 		}
 		return myJson;
+	}
+
+	public JSONObject link(String field, int idx) {
+		JSONArray rArray = this.getJsonArray(field + "&Array");
+		if (JSONArray.isInvaild(rArray)) {
+			return this;
+		} else {
+			JSONObject o = (JSONObject) rArray.get(idx);
+			if (isInvalided(o)) {
+				return this;
+			} else {
+				Iterator var5 = o.keySet().iterator();
+
+				while (var5.hasNext()) {
+					String key = (String) var5.next();
+					this.put(field + "#" + key, o.get(key));
+				}
+
+				return this;
+			}
+		}
 	}
 }

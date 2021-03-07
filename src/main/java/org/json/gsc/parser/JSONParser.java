@@ -2,7 +2,10 @@
  * $Id: JSONParser.java,v 1.1 2006/04/15 14:10:48 platform Exp $
  * Created on 2006-4-15
  */
-package org.json.simple.parser;
+package org.json.gsc.parser;
+
+import org.json.gsc.JSONArray;
+import org.json.gsc.JSONObject;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -11,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 
 /**
  * Parser for JSON text. Please note that JSONParser is NOT thread-safe.
@@ -21,24 +21,24 @@ import org.json.simple.JSONObject;
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
 public class JSONParser {
-	public static final int S_INIT=0;
-	public static final int S_IN_FINISHED_VALUE=1;//string,number,boolean,null,object,array
-	public static final int S_IN_OBJECT=2;
-	public static final int S_IN_ARRAY=3;
-	public static final int S_PASSED_PAIR_KEY=4;
-	public static final int S_IN_PAIR_VALUE=5;
-	public static final int S_END=6;
-	public static final int S_IN_ERROR=-1;
-	
+	public static final int S_INIT = 0;
+	public static final int S_IN_FINISHED_VALUE = 1;//string,number,boolean,null,object,array
+	public static final int S_IN_OBJECT = 2;
+	public static final int S_IN_ARRAY = 3;
+	public static final int S_PASSED_PAIR_KEY = 4;
+	public static final int S_IN_PAIR_VALUE = 5;
+	public static final int S_END = 6;
+	public static final int S_IN_ERROR = -1;
+
 	private LinkedList handlerStatusStack;
-	private Yylex lexer = new Yylex((Reader)null);
+	private final Yylex lexer = new Yylex((Reader) null);
 	private Yytoken token = null;
 	private int status = S_INIT;
-	
-	private int peekStatus(LinkedList statusStack){
-		if(statusStack.size()==0)
+
+	private int peekStatus(LinkedList statusStack) {
+		if (statusStack.size() == 0)
 			return -1;
-		Integer status=(Integer)statusStack.getFirst();
+		Integer status = (Integer) statusStack.getFirst();
 		return status.intValue();
 	}
 	
