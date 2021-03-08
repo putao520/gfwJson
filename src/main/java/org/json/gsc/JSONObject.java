@@ -38,6 +38,17 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		super.put(key, value);
 	}
 
+	public static JSONObject build() {
+		return new JSONObject();
+	}
+
+	public static JSONObject build(Map map) {
+		return new JSONObject(map);
+	}
+
+	public static JSONObject build(String key, Object value) {
+		return new JSONObject(key, value);
+	}
 
 	/**
 	 * Encode a map into JSON text and write it to out.
@@ -372,6 +383,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return this.link(field, 0);
 	}
 
+	@Deprecated
 	public static JSONObject putx(String key, Object val) {
 		return (new JSONObject()).puts(key, val);
 	}

@@ -38,6 +38,14 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		super(c);
 	}
 
+	public static JSONArray build() {
+		return new JSONArray();
+	}
+
+	public static JSONArray build(Collection c) {
+		return new JSONArray(c);
+	}
+
 	/**
 	 * Encode a list into JSON text and write it to out.
 	 * If this list is also a JSONStreamAware or a JSONAware, JSONStreamAware and JSONAware specific behaviours will be ignored at this top level.
@@ -538,19 +546,20 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		}
 	}
 
-	public static final JSONArray addx(Object obj){
+	@Deprecated
+	public static final JSONArray addx(Object obj) {
 		return (new JSONArray()).adds(obj);
 	}
 
-	public static final JSONArray toJSONArray(List<Object> arrayList){
+	public static final JSONArray toJSONArray(List<Object> arrayList) {
 		JSONArray arrayJson = new JSONArray();
-		for(Object object : arrayList){
+		for (Object object : arrayList) {
 			arrayJson.add(object);
 		}
 		return arrayJson;
 	}
 
-	public static final JSONArray toJSONArray(String str){
+	public static final JSONArray toJSONArray(String str) {
 		JSONArray rObject;
 		JSONParser parser = new JSONParser();
 		try{
