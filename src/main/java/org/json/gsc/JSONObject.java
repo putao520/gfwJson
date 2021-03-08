@@ -50,6 +50,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return new JSONObject(key, value);
 	}
 
+	public static JSONObject build(String json) {
+		return toJSON(json);
+	}
+
 	/**
 	 * Encode a map into JSON text and write it to out.
 	 * If this map is also a JSONAware or JSONStreamAware, JSONAware or JSONStreamAware specific behaviours will be ignored at this top level.
