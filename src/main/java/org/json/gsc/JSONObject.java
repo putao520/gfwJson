@@ -532,7 +532,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
 	public JSONObject link(String field, int idx) {
 		JSONArray rArray = this.getJsonArray(field + "&Array");
-		if (JSONArray.isInvaild(rArray)) {
+		if (JSONArray.isInvalided(rArray)) {
 			return this;
 		} else {
 			JSONObject o = (JSONObject) rArray.get(idx);

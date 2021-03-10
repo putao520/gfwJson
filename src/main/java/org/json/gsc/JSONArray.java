@@ -566,15 +566,15 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	public static final JSONArray toJSONArray(String str) {
 		JSONArray rObject;
 		JSONParser parser = new JSONParser();
-		try{
-			rObject = (JSONArray)parser.parse(str);
-		}catch (Exception e) {
+		try {
+			rObject = (JSONArray) parser.parse(str);
+		} catch (Exception e) {
 			rObject = null;
 		}
 		return rObject;
 	}
 
-	public static final boolean isInvaild(JSONArray array) {
+	public static final boolean isInvalided(JSONArray array) {
 		return array == null || array.size() == 0;
 	}
 
