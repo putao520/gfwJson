@@ -138,14 +138,25 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return sb.toString();
 	}
 
+	public boolean compare(JSONObject json) {
+		for (String key : keySet()) {
+			if (!json.containsKey(key)) {    // 判断是否包含对应key
+				return false;
+			}
+			if (!json.get(key).equals(get(key))) {    // 比较对应值是否一致
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
 	 * It's the same as JSONValue.escape() only for compatibility here.
 	 *
-	 * @see org.json.gsc.JSONValue#escape(String)
-	 *
 	 * @param s
 	 * @return
+	 * @see org.json.gsc.JSONValue#escape(String)
 	 */
 	public static String escape(String s){
 		return JSONValue.escape(s);

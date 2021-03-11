@@ -642,6 +642,18 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return this;
 	}
 
+	// 比较jsonObject构成的jsonArray,内容是否一致(不管顺序)
+	public boolean compareJson(JSONArray<JSONObject> jsonArray) {
+		for (JSONObject json : jsonArray) {
+			for (int i = 0, l = this.size(); i < l; i++) {
+				if (!json.compare(getJson(i))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	public JSONArray step(int no) {
 		JSONArray outArray = new JSONArray();
 		for (int i = no, l = this.size(); i < l; i++) {
