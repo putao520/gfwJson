@@ -150,6 +150,14 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return true;
 	}
 
+	public JSONObject mapsByKey(String key) {
+		JSONObject r = new JSONObject();
+		for (Object v : values()) {
+			r.put(getString(key), v);
+		}
+		return r;
+	}
+
 	/**
 	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
 	 * It's the same as JSONValue.escape() only for compatibility here.
@@ -158,7 +166,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 * @return
 	 * @see org.json.gsc.JSONValue#escape(String)
 	 */
-	public static String escape(String s){
+	public static String escape(String s) {
 		return JSONValue.escape(s);
 	}
 
