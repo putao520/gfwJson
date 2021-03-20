@@ -673,15 +673,24 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return this;
 	}
 
+	// 深度克隆
+	public JSONArray<V> clone() {
+		JSONArray<V> result = JSONArray.build();
+		for (V v : this) {
+			result.add(v);
+		}
+		return result;
+	}
+
 	// 修改Field内对应的值
 	public JSONArray mapValue(String field, Function<Object, Object> func) {
-		JSONObject item;
-		for(int i=0,l=this.size(); i <l; i++){
-			item = this.getJson(i);
-			item.put( field, func.apply(item.get(field)) );
+		for (Object v : this) {
+			JSONObject item = (JSONObject) v;
+			item.put(field, func.apply(item.get(field)));
 		}
 		return this;
 	}
+
 	// 修改Field
 	public JSONArray mapKey( String field , Function<String,String> func){
 		JSONObject item;

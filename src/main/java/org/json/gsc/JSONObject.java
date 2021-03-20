@@ -150,6 +150,11 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return true;
 	}
 
+	public JSONObject putAlls(Map<? extends String, ?> m) {
+		putAll(m);
+		return this;
+	}
+
 	public JSONObject mapsByKey(String key) {
 		JSONObject r = new JSONObject();
 		for (Object v : values()) {
