@@ -336,15 +336,20 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	}
 
 	public boolean getBoolean(String key){
-		boolean ri = false;
-		try{
-			ri = (boolean)get(key);
-		}
-		catch(Exception e){
-			ri = false;
+		boolean ri;
+		try {
+			ri = (boolean) get(key);
+		} catch (Exception e) {
 			Object val = get(key);
-			if( val instanceof String ){
-				ri = Boolean.getBoolean((String) val);
+			if (val instanceof String) {
+				String v = (String) val;
+				if (v.equals("0")) {
+					ri = false;
+				} else if (v.equals("1")) {
+					ri = true;
+				} else {
+					ri = Boolean.valueOf(v);
+				}
 			} else{
 				ri = false;
 			}
