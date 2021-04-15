@@ -742,16 +742,21 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	public JSONArray reduce(){
 		JSONArray outArray = new JSONArray();
 		// 异常处理
-		if( groups != null ){
+		if (groups != null) {
 			// 整合最后的hash（合并数据）
-			for(Object key : groups.keySet()){
-				outArray.addAll( groups.get(key) );
+			for (Object key : groups.keySet()) {
+				outArray.addAll(groups.get(key));
 			}
 		}
 		return outArray;
 	}
 
-	public JSONArray mapReduce(String field, Function<JSONArray, JSONArray> reduceFunc){
+	public JSONArray addAlls(Collection<? extends V> c) {
+		this.addAll(c);
+		return this;
+	}
+
+	public JSONArray mapReduce(String field, Function<JSONArray, JSONArray> reduceFunc) {
 		return this.flatMap(field).then(reduceFunc).reduce();
 	}
 }
