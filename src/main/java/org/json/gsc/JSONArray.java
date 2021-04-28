@@ -671,11 +671,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return outArray;
 	}
 
-	public JSONArray filter(String field, Function<Object, Boolean> cb) {
+	public <O> JSONArray filter(String field, Function<O, Boolean> cb) {
 		Iterator<V> it = this.iterator();
 		while (it.hasNext()) {
 			// 不符合条件删除
-			if (!cb.apply(((JSONObject) it.next()).get(field))) {
+			if (!cb.apply((O) ((JSONObject) it.next()).get(field))) {
 				it.remove();
 			}
 		}
@@ -692,23 +692,23 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	}
 
 	// 修改Field内对应的值
-	public JSONArray mapValue(String field, Function<Object, Object> func) {
+	public <O> JSONArray mapValue(String field, Function<O, Object> func) {
 		for (Object v : this) {
 			JSONObject item = (JSONObject) v;
-			item.put(field, func.apply(item.get(field)));
+			item.put(field, func.apply((O) item.get(field)));
 		}
 		return this;
 	}
 
 	// 修改Field
-	public JSONArray mapKey( String field , Function<String,String> func){
+	public JSONArray mapKey(String field, Function<String, String> func) {
 		JSONObject item;
 		Object val;
-		for(Object o : this){
-			item = (JSONObject)o;
+		for (Object o : this) {
+			item = (JSONObject) o;
 			val = item.get(field);
 			item.remove(field);
-			item.put(func.apply( field ), val);
+			item.put(func.apply(field), val);
 		}
 		return this;
 	}
