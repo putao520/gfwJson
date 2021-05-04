@@ -166,7 +166,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
 	public boolean compare(JSONObject json) {
 		for (String key : keySet()) {
-			if (!json.containsKey(key)) {    // 判断是否包含对应key
+			if (!json.has(key)) {    // 判断是否包含对应key
 				return false;
 			}
 			if (!json.get(key).equals(get(key))) {    // 比较对应值是否一致
@@ -229,18 +229,22 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	}
 
 	public Object get(String key, Object defaultValue) {
-		return containsKey(key) ? get(key) : defaultValue;
+		return has(key) ? get(key) : defaultValue;
 	}
 
-	public String getString(String key){
+	public boolean has(String key) {
+		return containsKey(key);
+	}
+
+	public String getString(String key) {
 		Object value = get(key);
-		if( key.equals("_id") && value instanceof JSONObject && ((JSONObject) value).containsKey("$oid") ){
+		if (key.equals("_id") && value instanceof JSONObject && ((JSONObject) value).has("$oid")) {
 			value = ((JSONObject) value).getString("$oid");
 		}
-		return  value==null ? "" : value.toString();
+		return value == null ? "" : value.toString();
 	}
 
-	public int getInt(String key){
+	public int getInt(String key) {
 		int ri = 0;
 		Object val = get(key);
 		try{
@@ -546,14 +550,14 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	@SuppressWarnings("unchecked")
 	public JSONObject mapReplace(JSONObject sourceData){
 		String localkey;
-		for(String key : sourceData.keySet()){
-			if(mapTable.containsKey(key)){
+		for(String key : sourceData.keySet()) {
+			if (mapTable.containsKey(key)) {
 				localkey = mapTable.get(key);
-				if( this.containsKey(localkey) ){
+				if (this.has(localkey)) {
 					this.put(localkey, sourceData.get(key));
 				}
 			}
-			if( containsKey(key) ){
+			if (has(key)) {
 				put(key, sourceData.get(key));
 			}
 		}
