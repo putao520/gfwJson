@@ -51,7 +51,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	}
 
 	public static JSONArray build(Object s) {
-		return (new JSONArray()).adds(s);
+		return (new JSONArray()).put(s);
 	}
 
 	public JSONArray removeAll() {
@@ -564,10 +564,12 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return toJSONString(this, 1);
 	}
 
-
-	public JSONArray adds(V obj) {
-		add(obj);
-		return this;
+	public static final JSONArray toJSONArray(List<Object> arrayList) {
+		JSONArray arrayJson = new JSONArray();
+		for (Object object : arrayList) {
+			arrayJson.put(object);
+		}
+		return arrayJson;
 	}
 
 	public <T> List<T> toArrayList() {
@@ -601,6 +603,34 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 
 	public JSONArray joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray) {
 		return this.joinOn(ownFieldName, foreignFieldName, foreignArray, false);
+	}
+
+	public static final <T extends Iterable> JSONArray convert(T in) {
+		JSONArray myJsonArray = new JSONArray();
+		for (Object obj : in) {
+			myJsonArray.put(obj);
+		}
+		return myJsonArray;
+	}
+
+	public JSONArray put(V obj) {
+		add(obj);
+		return this;
+	}
+
+	public static final JSONArray toJSONArray(String str) {
+		JSONArray rObject;
+		JSONParser parser = new JSONParser();
+		try {
+			rObject = (JSONArray) parser.parse(str);
+		} catch (Exception e) {
+			rObject = null;
+		}
+		return rObject;
+	}
+
+	public static final boolean isInvalided(JSONArray array) {
+		return array == null || array.size() == 0;
 	}
 
 	public JSONArray joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item) {
@@ -638,7 +668,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 									child_it.remove();
 								}
 							} else {
-								rArray.add(quickMap.get(keyValue));
+								rArray.put(quickMap.get(keyValue));
 							}
 						}
 
@@ -652,42 +682,6 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 				return this;
 			}
 		}
-	}
-
-	@Deprecated
-	public static final JSONArray addx(Object obj) {
-		return (new JSONArray()).adds(obj);
-	}
-
-	public static final JSONArray toJSONArray(List<Object> arrayList) {
-		JSONArray arrayJson = new JSONArray();
-		for (Object object : arrayList) {
-			arrayJson.add(object);
-		}
-		return arrayJson;
-	}
-
-	public static final JSONArray toJSONArray(String str) {
-		JSONArray rObject;
-		JSONParser parser = new JSONParser();
-		try {
-			rObject = (JSONArray) parser.parse(str);
-		} catch (Exception e) {
-			rObject = null;
-		}
-		return rObject;
-	}
-
-	public static final boolean isInvalided(JSONArray array) {
-		return array == null || array.size() == 0;
-	}
-
-	public static final <T extends Iterable> JSONArray convert(T in) {
-		JSONArray myJsonArray = new JSONArray();
-		for (Object obj : in) {
-			myJsonArray.add(obj);
-		}
-		return myJsonArray;
 	}
 
 	private JSONArray sortJsonArray(String field, int sort) {
@@ -711,7 +705,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 						sortValue = sortValue2;
 					}
 				} else {
-					if (sortValue2 > sortValue){
+					if (sortValue2 > sortValue) {
 						item = item2;
 						sortValue = sortValue2;
 					}
@@ -721,7 +715,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			this.remove(item);
 			it = this.iterator();
 			// 添加最大对象到新数组
-			newArray.add(item);
+			newArray.put(item);
 		}
 		return newArray;
 	}
@@ -761,7 +755,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	public JSONArray step(int no) {
 		JSONArray outArray = new JSONArray();
 		for (int i = no, l = this.size(); i < l; i++) {
-			outArray.add(this.get(i));
+			outArray.put(this.get(i));
 		}
 		return outArray;
 	}
@@ -781,7 +775,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 	public JSONArray<V> clone() {
 		JSONArray<V> result = JSONArray.build();
 		for (V v : this) {
-			result.add(v);
+			result.put(v);
 		}
 		return result;
 	}
@@ -820,7 +814,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			if (!groups.containsKey(groupValue)) {
 				groups.put(groupValue, new JSONArray());
 			}
-			groups.get(groupValue).add(item);
+			groups.get(groupValue).put(item);
 		}
 		return this;
 	}
@@ -840,13 +834,13 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		if (groups != null) {
 			// 整合最后的hash（合并数据）
 			for (Object key : groups.keySet()) {
-				outArray.addAll(groups.get(key));
+				outArray.put(groups.get(key));
 			}
 		}
 		return outArray;
 	}
 
-	public JSONArray addAlls(Collection<? extends V> c) {
+	public JSONArray put(Collection<? extends V> c) {
 		this.addAll(c);
 		return this;
 	}

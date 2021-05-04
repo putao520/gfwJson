@@ -290,31 +290,31 @@ public class Test extends TestCase {
 	
 	public void testEncode() throws Exception{
 		System.out.println("=======encode=======");
-		
-		JSONArray array1=new JSONArray();
-		array1.add("abc\u0010a/");
-		array1.add(new Integer(123));
-		array1.add(new Double(222.123));
-		array1.add(new Boolean(true));
+
+		JSONArray array1 = new JSONArray();
+		array1.put("abc\u0010a/");
+		array1.put(new Integer(123));
+		array1.put(new Double(222.123));
+		array1.put(new Boolean(true));
 		System.out.println("======array1==========");
 		System.out.println(array1);
 		System.out.println();
-		assertEquals("[\"abc\\u0010a\\/\",123,222.123,true]",array1.toString());
-		
-		JSONObject obj1=new JSONObject();
-		obj1.put("array1",array1);
+		assertEquals("[\"abc\\u0010a\\/\",123,222.123,true]", array1.toString());
+
+		JSONObject obj1 = new JSONObject();
+		obj1.put("array1", array1);
 		System.out.println("======obj1 with array1===========");
 		System.out.println(obj1);
 		System.out.println();
-		assertEquals("{\"array1\":[\"abc\\u0010a\\/\",123,222.123,true]}",obj1.toString());
-		
+		assertEquals("{\"array1\":[\"abc\\u0010a\\/\",123,222.123,true]}", obj1.toString());
+
 		obj1.remove("array1");
-		array1.add(obj1);
+		array1.put(obj1);
 		System.out.println("======array1 with obj1========");
 		System.out.println(array1);
 		System.out.println();
-		assertEquals("[\"abc\\u0010a\\/\",123,222.123,true,{}]",array1.toString());
-	
+		assertEquals("[\"abc\\u0010a\\/\",123,222.123,true,{}]", array1.toString());
+
 		List list = new ArrayList();
 		list.add("abc\u0010a/");
 		list.add(new Integer(123));

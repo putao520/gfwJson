@@ -176,9 +176,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return true;
 	}
 
-	public JSONObject putAlls(Map<? extends String, ?> m) {
-		putAll(m);
-		return this;
+	@Deprecated
+	public static JSONObject putx(String key, Object val) {
+		return (new JSONObject()).put(key, val);
 	}
 
 	public JSONObject mapsByKey(String key) {
@@ -201,31 +201,34 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return JSONValue.escape(s);
 	}
 
-	public JSONObject puts(String key,Object value){
-		put(key,value);
+	public JSONObject put(Map<? extends String, ?> m) {
+		putAll(m);
 		return this;
 	}
-	public Object escapeHtml(Object value){
-		return ( value instanceof String ) ? escape((String)value) : value;
+
+	public Object escapeHtml(Object value) {
+		return (value instanceof String) ? escape((String) value) : value;
 	}
 
-	public Object unescapeHtml(Object value){
-		return ( value instanceof String ) ? escape((String)value) : value;
+	public Object unescapeHtml(Object value) {
+		return (value instanceof String) ? escape((String) value) : value;
 	}
 
-	public Object escapeHtmlPut(String key,Object value){
+	public Object escapeHtmlPut(String key, Object value) {
 		return put(key, escapeHtml(value));
 	}
 
-	public JSONObject escapeHtmlPuts(String key,Object value){
-		return puts(key, escapeHtml(value));
+	@Override
+	public JSONObject put(String key, Object value) {
+		super.put(key, value);
+		return this;
 	}
 
-	public Object escapeHtmlGet(String key){
-		return unescapeHtml( get(key) );
+	public Object escapeHtmlGet(String key) {
+		return unescapeHtml(get(key));
 	}
 
-	public Object get(String key,Object defaultValue){
+	public Object get(String key, Object defaultValue) {
 		return containsKey(key) ? get(key) : defaultValue;
 	}
 
@@ -380,43 +383,21 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		if( val instanceof String ){
 			return JSONObject.toJSON((String)val);
 		}
-		try{
+		try {
 			val = JSONObject.toJSON(val.toString());
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			val = null;
 		}
-		return (JSONObject)val;
+		return (JSONObject) val;
 	}
 
-	public JSONArray getJsonArray(String key){
-		Object val = get(key);
-		if( val instanceof JSONArray ){
-			return (JSONArray)val;
-		}
-		if( val instanceof String ){
-			return JSONArray.toJSONArray((String)val);
-		}
-		if( val instanceof JSONObject){
-			return JSONArray.addx(val);
-		}
-		if( val instanceof ArrayList<?> ){
-			JSONArray rArray = new JSONArray();
-			((List<?>)val).forEach( e->rArray.add(e) );
-			return rArray;
-		}
-		try{
-			val = JSONArray.toJSONArray(val.toString());
-		}
-		catch(Exception e){
-			val = null;
-		}
-		return (JSONArray)val;
+	public JSONObject escapeHtmlPuts(String key, Object value) {
+		return put(key, escapeHtml(value));
 	}
 
-	public Object getPkValue(String key){
+	public Object getPkValue(String key) {
 		Object val = getMongoID(key);
-		if( val == null){
+		if (val == null) {
 			val = get(key);
 		}
 		return val;
@@ -436,9 +417,29 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return this.link(field, 0);
 	}
 
-	@Deprecated
-	public static JSONObject putx(String key, Object val) {
-		return (new JSONObject()).puts(key, val);
+	public JSONArray getJsonArray(String key) {
+		Object val = get(key);
+		if (val instanceof JSONArray) {
+			return (JSONArray) val;
+		}
+		if (val instanceof String) {
+			return JSONArray.toJSONArray((String) val);
+		}
+		if (val instanceof JSONObject) {
+			return JSONArray.build(val);
+		}
+		if( val instanceof ArrayList<?> ){
+			JSONArray rArray = new JSONArray();
+			((List<?>)val).forEach( e->rArray.add(e) );
+			return rArray;
+		}
+		try{
+			val = JSONArray.toJSONArray(val.toString());
+		}
+		catch(Exception e){
+			val = null;
+		}
+		return (JSONArray)val;
 	}
 
 	public static final JSONObject toJSON(String str) {
