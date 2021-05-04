@@ -176,11 +176,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return true;
 	}
 
-	@Deprecated
-	public static JSONObject putx(String key, Object val) {
-		return (new JSONObject()).put(key, val);
-	}
-
 	public JSONObject mapsByKey(String key) {
 		JSONObject r = new JSONObject();
 		for (Object v : values()) {
