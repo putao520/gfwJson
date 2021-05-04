@@ -88,12 +88,12 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 
 		String format_end = getAppend(format);
 
-		out.write('[' + format_end);
+		out.write('[');
 		while (iter.hasNext()) {
 			if (first) {
 				first = false;
 			} else {
-				out.write(',' + format_end);
+				out.write(',');
 			}
 			Object value = iter.next();
 			if (value == null) {
@@ -206,11 +206,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -245,11 +245,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -284,11 +284,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -323,11 +323,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -362,11 +362,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -401,11 +401,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -440,11 +440,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -479,11 +479,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end + "\"");
+			out.write("[\"");
 			out.write(String.valueOf(array[0]));
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("\"," + format_end + "\"");
+				out.write("\",\"");
 				out.write(String.valueOf(array[i]));
 			}
 
@@ -518,11 +518,11 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 			out.write("[]");
 		} else {
 			String format_end = getAppend(format);
-			out.write("[" + format_end);
+			out.write("[");
 			JSONValue.writeJSONString(array[0], out);
 
 			for (int i = 1; i < array.length; i++) {
-				out.write("," + format_end);
+				out.write(",");
 				JSONValue.writeJSONString(array[i], out);
 			}
 
