@@ -65,9 +65,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 *
 	 * @param map
 	 * @param out
+	 * @param format 为0没有格式化，为1格式化
 	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
 	 */
-	public static void writeJSONString(Map map, Writer out) throws IOException {
+	public static void writeJSONString(Map map, Writer out, int format) throws IOException {
 		if (map == null) {
 			out.write("null");
 			return;
@@ -76,12 +77,21 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		boolean first = true;
 		Iterator iter = map.entrySet().iterator();
 
-		out.write('{');
+		String format_end;
+		switch (format) {
+			case 1:
+				format_end = "\r\n";
+				break;
+			default:
+				format_end = "";
+		}
+
+		out.write('{' + format_end);
 		while (iter.hasNext()) {
 			if (first)
 				first = false;
 			else
-				out.write(',');
+				out.write(',' + format_end);
 			Map.Entry entry = (Map.Entry) iter.next();
 			out.write('\"');
 			out.write(escape(String.valueOf(entry.getKey())));
@@ -89,27 +99,22 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 			out.write(':');
 			JSONValue.writeJSONString(entry.getValue(), out);
 		}
-		out.write('}');
-	}
-
-	public void writeJSONString(Writer out) throws IOException{
-		writeJSONString(this, out);
+		out.write('}' + format_end);
 	}
 
 	/**
-	 * Convert a map to JSON text. The result is a JSON object. 
+	 * Convert a map to JSON text. The result is a JSON object.
 	 * If this map is also a JSONAware, JSONAware specific behaviours will be omitted at this top level.
-	 *
-	 * @see org.json.gsc.JSONValue#toJSONString(Object)
 	 *
 	 * @param map
 	 * @return JSON text, or "null" if map is null.
+	 * @see org.json.gsc.JSONValue#toJSONString(Object)
 	 */
-	public static String toJSONString(Map map){
+	public static String toJSONString(Map map, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(map, writer);
+			writeJSONString(map, writer, format);
 			return writer.toString();
 		} catch (IOException e) {
 			// This should never happen with a StringWriter
@@ -117,16 +122,32 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		}
 	}
 
-	public String toJSONString(){
+	public static String toPrettyJSONString(Map map) {
+		return toJSONString(map, 1);
+	}
+
+	public static String toJSONString(Map map) {
+		return toJSONString(map, 0);
+	}
+
+	public void writeJSONString(Writer out, int format) throws IOException {
+		writeJSONString(this, out, format);
+	}
+
+	public void writeJSONString(Writer out) throws IOException {
+		writeJSONString(this, out, 0);
+	}
+
+	public String toString() {
 		return toJSONString(this);
 	}
 
-	public String toString(){
-		return toJSONString();
+	public String toPrettyString() {
+		return toPrettyJSONString(this);
 	}
 
 	public String toEscapeString() {
-		return escape(toJSONString());
+		return escape(toString());
 	}
 
 	public static String toString(String key, Object value) {
@@ -212,12 +233,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		Object value = get(key);
 		if( key.equals("_id") && value instanceof JSONObject && ((JSONObject) value).containsKey("$oid") ){
 			value = ((JSONObject) value).getString("$oid");
-		}
-		else if( value instanceof JSONObject ){
-			value = ((JSONObject) value).toJSONString();
-		}
-		else if( value instanceof JSONArray ){
-			value = ((JSONArray) value).toJSONString();
 		}
 		return  value==null ? "" : value.toString();
 	}

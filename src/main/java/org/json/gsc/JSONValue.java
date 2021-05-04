@@ -145,17 +145,17 @@ public class JSONValue {
         }
 
         if ((value instanceof JSONAware)) {
-            out.write(((JSONAware) value).toJSONString());
+            out.write((value).toString());
             return;
         }
 
         if (value instanceof Map) {
-            JSONObject.writeJSONString((Map) value, out);
+            JSONObject.writeJSONString((Map) value, out, 0);
             return;
         }
 
         if (value instanceof Collection) {
-            JSONArray.writeJSONString((Collection) value, out);
+            JSONArray.writeJSONString((Collection) value, out, 0);
             return;
         }
 

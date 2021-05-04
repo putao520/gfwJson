@@ -59,15 +59,25 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return this;
 	}
 
+	private static String getAppend(int format) {
+		switch (format) {
+			case 1:
+				return "\r\n";
+			default:
+				return "";
+		}
+	}
+
 	/**
 	 * Encode a list into JSON text and write it to out.
 	 * If this list is also a JSONStreamAware or a JSONAware, JSONStreamAware and JSONAware specific behaviours will be ignored at this top level.
 	 *
 	 * @param collection
 	 * @param out
+	 * @param format     为0没有格式化，为1格式化
 	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
 	 */
-	public static void writeJSONString(Collection collection, Writer out) throws IOException {
+	public static void writeJSONString(Collection collection, Writer out, int format) throws IOException {
 		if (collection == null) {
 			out.write("null");
 			return;
@@ -76,12 +86,14 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		boolean first = true;
 		Iterator iter = collection.iterator();
 
-		out.write('[');
+		String format_end = getAppend(format);
+
+		out.write('[' + format_end);
 		while (iter.hasNext()) {
 			if (first) {
 				first = false;
 			} else {
-				out.write(',');
+				out.write(',' + format_end);
 			}
 			Object value = iter.next();
 			if (value == null) {
@@ -91,7 +103,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 
 			JSONValue.writeJSONString(value, out);
 		}
-		out.write(']');
+		out.write(']' + format_end);
 	}
 
 	public JSONObject getJson(int idx){
@@ -156,317 +168,400 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return (float)this.get(idx);
 	}
 	public double getDouble(int idx){
-		return (double)this.get(idx);
-	}
-
-	@Override
-	public void writeJSONString(Writer out) throws IOException{
-		writeJSONString(this, out);
+		return (double) this.get(idx);
 	}
 
 	/**
-	 * Convert a list to JSON text. The result is a JSON array. 
+	 * Convert a list to JSON text. The result is a JSON array.
 	 * If this list is also a JSONAware, JSONAware specific behaviours will be omitted at this top level.
-	 *
-	 * @see org.json.gsc.JSONValue#toJSONString(Object)
 	 *
 	 * @param collection
 	 * @return JSON text, or "null" if list is null.
+	 * @see org.json.gsc.JSONValue#toJSONString(Object)
 	 */
-	public static String toJSONString(Collection collection){
+	public static String toJSONString(Collection collection) {
+		return toJSONString(collection, 0);
+	}
+
+	public static String toJSONString(Collection collection, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(collection, writer);
+			writeJSONString(collection, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(byte[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(byte[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(byte[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(byte[] array){
+	public static String toJSONString(byte[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(byte[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(short[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(short[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(short[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(short[] array){
+	public static String toJSONString(short[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(short[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(int[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(int[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(int[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(int[] array){
+	public static String toJSONString(int[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(int[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(long[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(long[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(long[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(long[] array){
+	public static String toJSONString(long[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(long[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(float[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(float[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(float[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(float[] array){
+	public static String toJSONString(float[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(float[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(double[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(double[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(double[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(double[] array){
+	public static String toJSONString(double[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(double[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(boolean[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(boolean[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(boolean[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(boolean[] array){
+	public static String toJSONString(boolean[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(boolean[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(char[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(char[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(char[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[\"");
+			String format_end = getAppend(format);
+			out.write("[" + format_end + "\"");
 			out.write(String.valueOf(array[0]));
 
-			for(int i = 1; i < array.length; i++){
-				out.write("\",\"");
+			for (int i = 1; i < array.length; i++) {
+				out.write("\"," + format_end + "\"");
 				out.write(String.valueOf(array[i]));
 			}
 
-			out.write("\"]");
+			out.write("\"]" + format_end);
 		}
 	}
 
-	public static String toJSONString(char[] array){
+	public static String toJSONString(char[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(char[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static void writeJSONString(Object[] array, Writer out) throws IOException{
-		if(array == null){
+	public static void writeJSONString(Object[] array, Writer out) throws IOException {
+		writeJSONString(array, out, 0);
+	}
+
+	public static void writeJSONString(Object[] array, Writer out, int format) throws IOException {
+		if (array == null) {
 			out.write("null");
-		} else if(array.length == 0) {
+		} else if (array.length == 0) {
 			out.write("[]");
 		} else {
-			out.write("[");
+			String format_end = getAppend(format);
+			out.write("[" + format_end);
 			JSONValue.writeJSONString(array[0], out);
 
-			for(int i = 1; i < array.length; i++){
-				out.write(",");
+			for (int i = 1; i < array.length; i++) {
+				out.write("," + format_end);
 				JSONValue.writeJSONString(array[i], out);
 			}
 
-			out.write("]");
+			out.write("]" + format_end);
 		}
 	}
 
-	public static String toJSONString(Object[] array){
+	public static String toJSONString(Object[] array) {
+		return toJSONString(array, 0);
+	}
+
+	public static String toJSONString(Object[] array, int format) {
 		final StringWriter writer = new StringWriter();
 
 		try {
-			writeJSONString(array, writer);
+			writeJSONString(array, writer, format);
 			return writer.toString();
-		} catch(IOException e){
+		} catch (IOException e) {
 			// This should never happen for a StringWriter
 			throw new RuntimeException(e);
 		}
 	}
 
+	public void writeJSONString(Writer out, int format) throws IOException {
+		writeJSONString(this, out, format);
+	}
+
 	@Override
-	public String toJSONString(){
+	public void writeJSONString(Writer out) throws IOException {
+		writeJSONString(this, out, 0);
+	}
+
+	@Override
+	public String toString() {
 		return toJSONString(this);
 	}
 
-	/**
-	 * Returns a string representation of this array. This is equivalent to
-	 * calling {@link JSONArray#toJSONString()}.
-	 */
-	@Override
-	public String toString() {
-		return toJSONString();
+	public String toPrettyString() {
+		return toJSONString(this, 1);
 	}
 
 
