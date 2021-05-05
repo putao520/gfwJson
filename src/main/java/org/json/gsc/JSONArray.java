@@ -771,7 +771,7 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return outArray;
 	}
 
-	public <O> JSONArray filter(String field, Function<O, Boolean> cb) {
+	public <O> JSONArray<V> filter(String field, Function<O, Boolean> cb) {
 		Iterator<V> it = this.iterator();
 		while (it.hasNext()) {
 			// 不符合条件删除
