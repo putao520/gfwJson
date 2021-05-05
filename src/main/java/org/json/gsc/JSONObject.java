@@ -201,6 +201,13 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return this;
 	}
 
+	public JSONObject putIfNotNull(Map<? extends String, ?> m) {
+		if (m != null) {
+			this.put(m);
+		}
+		return this;
+	}
+
 	public Object escapeHtml(Object value) {
 		return (value instanceof String) ? escape((String) value) : value;
 	}
@@ -216,6 +223,13 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	@Override
 	public JSONObject put(String key, Object value) {
 		super.put(key, value);
+		return this;
+	}
+
+	public JSONObject putIfNotNull(String key, Object value) {
+		if (value != null) {
+			this.put(key, value);
+		}
 		return this;
 	}
 

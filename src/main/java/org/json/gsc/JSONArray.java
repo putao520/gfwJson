@@ -618,6 +618,13 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return this;
 	}
 
+	public JSONArray putIfNotNull(V obj) {
+		if (obj != null) {
+			this.put(obj);
+		}
+		return this;
+	}
+
 	public static final JSONArray toJSONArray(String str) {
 		JSONArray rObject;
 		JSONParser parser = new JSONParser();
@@ -846,6 +853,13 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 
 	public JSONArray put(Collection<? extends V> c) {
 		this.addAll(c);
+		return this;
+	}
+
+	public JSONArray putIfNotNull(Collection<? extends V> c) {
+		if (c != null) {
+			this.put(c);
+		}
 		return this;
 	}
 
