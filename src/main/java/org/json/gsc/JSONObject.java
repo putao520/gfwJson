@@ -216,10 +216,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return (value instanceof String) ? escape((String) value) : value;
 	}
 
-	public Object escapeHtmlPut(String key, Object value) {
-		return put(key, escapeHtml(value));
-	}
-
 	@Override
 	public JSONObject put(String key, Object value) {
 		super.put(key, value);
@@ -394,7 +390,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 			return (JSONObject)val;
 		}
 		if( val instanceof String ){
-			return JSONObject.toJSON((String)val);
+			return JSONObject.toJSON((String) val);
 		}
 		try {
 			val = JSONObject.toJSON(val.toString());
@@ -404,7 +400,11 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return (JSONObject) val;
 	}
 
-	public JSONObject escapeHtmlPuts(String key, Object value) {
+	public boolean check(String k, Object v) {
+		return has(k) && get(k).equals(v);
+	}
+
+	public JSONObject escapeHtmlPut(String key, Object value) {
 		return put(key, escapeHtml(value));
 	}
 
