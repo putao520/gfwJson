@@ -633,6 +633,10 @@ public class JSONArray<V extends Object> extends ArrayList<V> implements JSONAwa
 		return array == null || array.size() == 0;
 	}
 
+	public boolean has(V v) {
+		return super.contains(v);
+	}
+
 	public JSONArray joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item) {
 		if (foreignArray == null) {
 			this.clear();
