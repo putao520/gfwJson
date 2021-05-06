@@ -104,41 +104,40 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		out.write(']' + format_end);
 	}
 
-	public JSONObject getJson(int idx){
-		Object val = this.get(idx);
-		JSONObject rs = null;
-		if( val instanceof String ){
-			rs = JSONObject.toJSON((String)val);
-		}
-		else if( val instanceof JSONObject ){
-			rs = (JSONObject)val;
-		}
-		if( rs == null ){
-			throw new RuntimeException("数据行:" + idx + " ->不是JSON数据");
-		}
-		return rs;
-	}
-
-	public JSONArray getJsonArray(int idx){
-		Object val = this.get(idx);
-		JSONArray rs = null;
-		if( val instanceof String ){
-			rs = JSONArray.toJSONArray((String) val);
-		} else if (val instanceof JSONArray) {
-			rs = (JSONArray) val;
-		}
-		if (rs == null) {
-			throw new RuntimeException("数据行:" + idx + " ->不是JSONArray数据");
-		}
-		return rs;
-	}
-
-	public static JSONArray<Object> toJSONArray(List<Object> arrayList) {
-		JSONArray<Object> arrayJson = new JSONArray<>();
-		for (Object object : arrayList) {
+	public static <T> JSONArray<T> toJSONArray(List<T> arrayList) {
+		JSONArray<T> arrayJson = new JSONArray<>();
+		for (T object : arrayList) {
 			arrayJson.put(object);
 		}
 		return arrayJson;
+	}
+
+	public JSONObject getJson(int idx) {
+		Object val = this.get(idx);
+		JSONObject rs = null;
+		if (val instanceof String) {
+			rs = JSONObject.toJSON((String) val);
+		} else if (val instanceof JSONObject) {
+			rs = (JSONObject) val;
+		}
+		if (rs == null) {
+			rs = JSONObject.build();
+		}
+		return rs;
+	}
+
+	public <T> JSONArray<T> getJsonArray(int idx) {
+		Object val = this.get(idx);
+		JSONArray rs = null;
+		if (val instanceof String) {
+			rs = JSONArray.<T>toJSONArray((String) val);
+		} else if (val instanceof JSONArray) {
+			rs = (JSONArray<T>) val;
+		}
+		if (rs == null) {
+			rs = JSONArray.<T>build();
+		}
+		return rs;
 	}
 
 	public int getInt(int idx) {

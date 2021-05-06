@@ -430,29 +430,28 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return this.link(field, 0);
 	}
 
-	public JSONArray getJsonArray(String key) {
+	public <T> JSONArray<T> getJsonArray(String key) {
 		Object val = get(key);
 		if (val instanceof JSONArray) {
-			return (JSONArray) val;
+			return (JSONArray<T>) val;
 		}
 		if (val instanceof String) {
 			return JSONArray.toJSONArray((String) val);
 		}
 		if (val instanceof JSONObject) {
-			return JSONArray.build(val);
+			return JSONArray.build((T) val);
 		}
-		if( val instanceof ArrayList<?> ){
-			JSONArray rArray = new JSONArray();
-			((List<?>)val).forEach( e->rArray.add(e) );
+		if( val instanceof ArrayList<?> ) {
+			JSONArray rArray = new JSONArray<T>();
+			((List<?>) val).forEach(e -> rArray.add(e));
 			return rArray;
 		}
-		try{
-			val = JSONArray.toJSONArray(val.toString());
-		}
-		catch(Exception e){
+		try {
+			val = JSONArray.<T>toJSONArray(val.toString());
+		} catch (Exception e) {
 			val = null;
 		}
-		return (JSONArray)val;
+		return (JSONArray<T>) val;
 	}
 
 	public static final JSONObject toJSON(String str) {
