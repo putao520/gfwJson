@@ -449,7 +449,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		try {
 			val = JSONArray.<T>toJSONArray(val.toString());
 		} catch (Exception e) {
-			val = null;
+			val = JSONArray.<T>build();
 		}
 		return (JSONArray<T>) val;
 	}
