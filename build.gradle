@@ -18,8 +18,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
 }
 
-group = 'GrapeSoft'
-version = '2.001'
+group = 'io.girhub.putao520'
+version = '1.00'
 description = 'gfwJson'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -37,4 +37,50 @@ publishing {
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment {
+                MavenDeployment deployment -> signing.signPom(deployment)
+            }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'gfwJson'
+                packaging 'aar'
+                description 'this is a new json package,base on json-simple. add serialization And Deserialize. add some new action for JsonArray'
+                url 'https://github.com/putao520/gfwJson'
+
+                scm {
+                    connection 'scm:git:https://github.com/putao520/gfwJson.git'
+                    developerConnection 'scm:git:https://github.com/putao520/gfwJson.git'
+                    url 'https://github.com/putao520/gfwJson.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'putao520'
+                        name 'putao520'
+                        email 'yuyao1022@hotmail.com'
+                    }
+                }
+            }
+        }
+    }
 }
