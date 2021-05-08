@@ -66,6 +66,28 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return "";
 	}
 
+	public boolean isJsonValue() {
+		if (size() > 0) {
+			try {
+				return JSONObject.build(get(0).toString()) != null;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public boolean isJsonArrayValue() {
+		if (size() > 0) {
+			try {
+				return JSONArray.build(get(0).toString()) != null;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Encode a list into JSON text and write it to out.
 	 * If this list is also a JSONStreamAware or a JSONAware, JSONStreamAware and JSONAware specific behaviours will be ignored at this top level.

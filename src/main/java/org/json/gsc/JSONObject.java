@@ -9,6 +9,9 @@ import org.json.gsc.parser.JSONParser;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -610,6 +613,144 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
 				return this;
 			}
+		}
+	}
+
+	private static String toUpperFirstChar(String str) {
+		var arr = str.toLowerCase(Locale.ROOT).toCharArray();
+		arr[0] -= 32;
+		return String.valueOf(arr);
+	}
+
+	private static boolean isJsonType(Object o) {
+		if (o instanceof JSONArray) {
+			return true;
+		} else if (o instanceof JSONObject) {
+			return true;
+		} else if (o instanceof String) {
+			return true;
+		} else if (o instanceof Boolean) {
+			return true;
+		} else if (o instanceof Byte) {
+			return true;
+		} else if (o instanceof Short) {
+			return true;
+		} else if (o instanceof Integer) {
+			return true;
+		} else if (o instanceof Long) {
+			return true;
+		} else if (o instanceof Float) {
+			return true;
+		} else if (o instanceof Double) {
+			return true;
+		} else if (o instanceof BigDecimal) {
+			return true;
+		} else return o instanceof BigInteger;
+	}
+
+	private static Object toMapperJsonSingle(Object o, Class<?> cls, boolean canArray) {
+		if (isJsonType(o)) {
+			return o;
+		}
+		if (!cls.isPrimitive()) {
+			return JSONObject.mapper(o, canArray);
+		}
+		return o;
+	}
+
+	private static Object toMapperJson(Object o, Field field, boolean canArray) {
+		try {
+			var type = field.getType();
+			var val = field.get(o);
+			// array
+			if (type.isArray()) {
+				JSONArray arr = JSONArray.build();
+				Object[] _val = (Object[]) val;
+				for (Object v : _val) {
+					arr.put(toMapperJsonSingle(v, type.getComponentType(), false));
+				}
+				return arr;
+			} else {
+				return toMapperJsonSingle(val, type, canArray);
+			}
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Field [" + field.getName() + "] IllegalAccess");
+		}
+	}
+
+	private static JSONObject mapper(Object o, boolean canArray) {
+		Class<?> cls = o.getClass();
+		JSONObject r = JSONObject.build();
+		var fields = cls.getDeclaredFields();
+		for (Field field : fields) {
+			if (field.getModifiers() != Modifier.PRIVATE) {
+				continue;
+			}
+			field.setAccessible(true);
+			r.put(field.getName(), toMapperJson(o, field, canArray));
+		}
+		return r;
+	}
+
+	// object->json
+	public static JSONObject mapper(Object o) {
+		return mapper(o, true);
+	}
+
+	private Object toMapperObject(Field field) {
+		var v = get(field.getName());
+		var type = field.getType();
+		// if value is Json
+		if (v instanceof JSONObject) {
+			return (type != JSONObject.class) ? ((JSONObject) v).mapper(field.getType()) : v;
+		} else if (v instanceof JSONArray) {
+			var jsonArray = (JSONArray) v;
+			if (type != JSONArray.class) {
+				List<Object> arrayList = new ArrayList<>();
+				for (Object i : jsonArray) {
+					var item = (JSONObject) i;
+					arrayList.add(type.isPrimitive() ?
+							item :
+							item.mapper(type.getComponentType())
+					);
+				}
+				return arrayList.toArray();
+			} else {
+				return v;
+			}
+		} else {
+			return v;
+		}
+	}
+
+	// json->object
+	public <T> T mapper(Class<T> cls) {
+		var fields = cls.getDeclaredFields();
+		try {
+			// var constructor = cls.getDeclaredConstructor(null);
+			var constructor = cls.getConstructor();
+			var o = constructor.newInstance();
+			for (Field field : fields) {
+				if (field.getModifiers() != Modifier.PRIVATE) {
+					continue;
+				}
+				field.setAccessible(true);
+				var result = toMapperObject(field);
+				field.set(o, (field.getType().isArray()) ?
+						GenericsArray.getArray(field.getType().getComponentType(), (Object[]) result) :
+						result
+				);
+
+			}
+			return o;
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("Class Not has Non-Parameter constructor");
+		} catch (InstantiationException e) {
+			throw new RuntimeException("Instantiation");
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("IllegalAccess");
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException("InvocationTarget");
 		}
 	}
 }

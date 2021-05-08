@@ -284,4 +284,6 @@ public class JSONArrayTest extends TestCase {
 		JSONArray.writeJSONString(new Object[]{"Hello", new Integer(12), new int[]{1, 2, 3}}, writer, 0);
 		assertEquals("[\"Hello\",12,[1,2,3]]", writer.toString());
 	}
+
+
 }

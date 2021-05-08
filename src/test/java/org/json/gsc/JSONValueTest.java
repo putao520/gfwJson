@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JSONValueTest extends TestCase {
 	public void testByteArrayToString() throws IOException {
@@ -246,11 +248,130 @@ public class JSONValueTest extends TestCase {
 
 		final String[][] nestedStringArray = new String[][]{{"a", "b"}, {"c", "d"}};
 		final String expectedNestedStringString = "[[\"a\",\"b\"],[\"c\",\"d\"]]";
-		
+
 		assertEquals(expectedNestedStringString, JSONValue.toJSONString(nestedStringArray));
-		
+
 		writer = new StringWriter();
 		JSONValue.writeJSONString(nestedStringArray, writer);
 		assertEquals(expectedNestedStringString, writer.toString());
+	}
+
+	public void testSimpleJsonToObject() {
+		// json->object
+		JSONObject json = JSONObject.build();
+		var o = json.put("d", 12.d).put("f", 16.f).mapper(ChildData.class);
+		assertEquals(o.getD(), 12.d);
+		assertEquals(o.getF(), 16.f);
+	}
+
+	public void testJsonToObject() {
+		var cdArr = JSONArray.<JSONObject>build();
+		for (int i = 0; i < 3; i++) {
+			cdArr.put(JSONObject.build("d", 55.d + i).put("f", 66.f + i));
+		}
+		// json->object
+		JSONObject json = JSONObject.build();
+		var o = json
+				.put("name", "putao520")
+				.put("val", 16)
+				.put("child", JSONObject.build("d", 55.d).put("f", 66.f))
+				.put("childArr", cdArr)
+				.put("json", JSONObject.build("first", "yu").put("second", "yue"))
+				.put("jsonArray", JSONArray.build().put("1").put("2").put("3"))
+				.put("jsonArrayJson", JSONArray.<JSONObject>build()
+						.put(JSONObject.build("id", 1))
+						.put(JSONObject.build("id", 2))
+						.put(JSONObject.build("id", 3))
+				)
+				.mapper(Data.class);
+		assertEquals(o.getName(), "putao520");
+		assertEquals(o.getVal(), 16);
+		var rCd = o.getChild();
+		assertEquals(rCd.getD(), 55.d);
+		assertEquals(rCd.getF(), 66.f);
+		var rCdArr = o.getChildArr();
+		for (int i = 0; i < 3; i++) {
+			var _cd = rCdArr[i];
+			assertEquals(_cd.getD(), 55.d + i);
+			assertEquals(_cd.getF(), 66.f + i);
+		}
+		JSONObject j = o.getJson();
+		assertEquals(j.getString("first"), "yu");
+		assertEquals(j.getString("second"), "yue");
+		JSONArray<String> ja = o.getJsonArray();
+		for (int i = 0; i < 3; i++) {
+			assertTrue(ja.get(i).equals(String.valueOf(i + 1)));
+		}
+		JSONArray<JSONObject> jaj = o.getJsonArrayJson();
+		System.out.println(jaj);
+		for (var v : jaj) {
+			assertTrue(v.containsKey("id"));
+		}
+	}
+
+	public void testSimpleObjectToJson() {
+		// object->json
+		ChildData cd = new ChildData();
+		cd.setD(12.d);
+		cd.setF(16.f);
+		var j = JSONObject.mapper(cd);
+		assertEquals(j.getDouble("d"), 12.d);
+		assertEquals(j.getFloat("f"), 16.f);
+	}
+
+	public void testObjectToJson() {
+		ChildData cd = new ChildData();
+		cd.setD(55.d);
+		cd.setF(66.f);
+
+		List<ChildData> cdArr = new ArrayList<>();
+		for (int i = 0; i < 3; i++) {
+			ChildData _cd = new ChildData();
+			_cd.setD(55.d + i);
+			_cd.setF(66.f + i);
+			cdArr.add(_cd);
+		}
+		ChildData[] cds = new ChildData[cdArr.size()];
+		cdArr.toArray(cds);
+
+		// object->json
+		Data da = new Data();
+		da.setName("putao520");
+		da.setVal(16);
+		da.setChild(cd);
+		da.setChildArr(cds);
+		da.setJson(JSONObject.build("first", "yu").put("second", "yue"));
+		da.setJsonArray(JSONArray.build().put("1").put("2").put("3"));
+		da.setJsonArrayJson(JSONArray.<JSONObject>build()
+				.put(JSONObject.build("id", 1))
+				.put(JSONObject.build("id", 2))
+				.put(JSONObject.build("id", 3))
+		);
+		JSONObject o = JSONObject.mapper(da);
+		System.out.println("test name");
+		assertEquals(o.getString("name"), "putao520");
+		System.out.println("test val");
+		assertEquals(o.getInt("val"), 16);
+		System.out.println("test child");
+		JSONObject j = o.getJson("child");
+		assertEquals(j.getDouble("d"), 55.d);
+		assertEquals(j.getFloat("f"), 66.f);
+		JSONArray<JSONObject> jArr = o.getJsonArray("childArr");
+		System.out.println(jArr);
+		for (JSONObject v : jArr) {
+			assertTrue(v.containsKey("d"));
+			assertTrue(v.containsKey("f"));
+		}
+		JSONObject rj = o.getJson("json");
+		assertEquals(rj.getString("first"), "yu");
+		assertEquals(rj.getString("second"), "yue");
+		JSONArray<String> ra = o.getJsonArray("jsonArray");
+		for (int i = 0; i < 3; i++) {
+			assertTrue(ra.getString(i).equals(String.valueOf(i + 1)));
+		}
+		JSONArray<JSONObject> raj = o.getJsonArray("jsonArrayJson");
+		for (int i = 0; i < 3; i++) {
+			assertEquals(raj.getJson(i).getInt("id"), (i + 1));
+		}
 	}
 }
