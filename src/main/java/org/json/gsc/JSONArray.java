@@ -718,13 +718,12 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		while (it.hasNext()) {
 			item = (JSONObject) it.next();
 			sortValue = item.getLong(field);
-			// 找到当前最大排序值对象
+
 			it2 = this.iterator();
 			while (it2.hasNext()) {
 				item2 = (JSONObject) it2.next();
 				sortValue2 = item2.getLong(field);
-				// 发现更大的排序值了，替换当前指标量
-				if (sort == 1) { // 升序
+				if (sort == 1) {
 					if (sortValue2 < sortValue) {
 						item = item2;
 						sortValue = sortValue2;
@@ -736,10 +735,9 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 					}
 				}
 			}
-			// 删除最大对象再老数组
+
 			this.remove(item);
 			it = this.iterator();
-			// 添加最大对象到新数组
 			newArray.put(item);
 		}
 		return newArray;
@@ -765,7 +763,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return this;
 	}
 
-	// 比较jsonObject构成的jsonArray,内容是否一致(不管顺序)
 	public boolean compareJson(JSONArray<JSONObject> jsonArray) {
 		for (JSONObject json : jsonArray) {
 			for (int i = 0, l = this.size(); i < l; i++) {
@@ -786,12 +783,12 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 	}
 
 	public <O> JSONArray<V> filter(String field, Function<O, Boolean> cb) {
-		// 不符合条件删除
+
 		this.removeIf(v -> !cb.apply((O) ((JSONObject) v).get(field)));
 		return this;
 	}
 
-	// 深度克隆
+
 	public JSONArray<V> clone() {
 		JSONArray<V> result = JSONArray.build();
 		for (V v : this) {
@@ -800,7 +797,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return result;
 	}
 
-	// 修改Field内对应的值
+
 	public <O> JSONArray mapValue(String field, Function<O, Object> func) {
 		for (Object v : this) {
 			JSONObject item = (JSONObject) v;
@@ -809,7 +806,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return this;
 	}
 
-	// 修改Field
+
 	public JSONArray mapKey(String field, Function<String, String> func) {
 		JSONObject item;
 		Object val;
@@ -822,7 +819,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return this;
 	}
 
-	// 按照field字段，树状展开
 	public JSONArray flatMap(String field) {
 		groups = new LinkedHashMap<>();
 		Iterator<V> it = this.iterator();
@@ -842,7 +838,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 	public JSONArray then(Function<JSONArray<JSONObject>, JSONArray<JSONObject>> func) {
 		// 异常处理
 		if (groups != null) {
-			// 过滤后替换值（中间过程）
 			groups.replaceAll((k, v) -> func.apply(groups.get(k)));
 		}
 		return this;
@@ -850,9 +845,8 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 
 	public JSONArray<JSONObject> reduce() {
 		JSONArray<JSONObject> outArray = new JSONArray<>();
-		// 异常处理
+
 		if (groups != null) {
-			// 整合最后的hash（合并数据）
 			for (Object key : groups.keySet()) {
 				outArray.put(groups.get(key));
 			}

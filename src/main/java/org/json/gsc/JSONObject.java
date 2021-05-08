@@ -68,7 +68,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 *
 	 * @param map
 	 * @param out
-	 * @param format 为0没有格式化，为1格式化
+	 * @param format
 	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
 	 */
 	public static void writeJSONString(Map map, Writer out, int format) throws IOException {
@@ -169,10 +169,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
 	public boolean compare(JSONObject json) {
 		for (String key : keySet()) {
-			if (!json.has(key)) {    // 判断是否包含对应key
+			if (!json.has(key)) {
 				return false;
 			}
-			if (!json.get(key).equals(get(key))) {    // 比较对应值是否一致
+			if (!json.get(key).equals(get(key))) {
 				return false;
 			}
 		}
@@ -485,9 +485,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		}
 		return newJson;
 	}
-	/**
-	 * 新增组
-	 * */
+
 	public JSONObject addGroup(String groupName, JSONObject input){
 		return addGroup(groupName, "#", input);
 	}
@@ -507,9 +505,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		}
 		return newJson;
 	}
-	/**
-	 * 将spiltString分割的字符串的左边看做一组
-	 * */
+
 	public JSONObject groupBy(String groupName){
 		return groupBy(groupName, "#");
 	}
@@ -546,22 +542,24 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONObject mapKey(JSONObject keys){
-		for(String key : keys.keySet()){
+	public JSONObject mapKey(JSONObject keys) {
+		for (String key : keys.keySet()) {
 			mapTable.put(key, keys.getString(key));
 		}
 		return this;
 	}
 
-	/**根据k-v映射表复制数据
-	 * 按当前JSON和mapTable 2个hashmap 里所包含的字段复制sourceData的数据到当前json
+	/**
+	 * k-v map to hashmap
+	 * json and mapTable, 2 hashmap contains fields copy to current json 里包含的自检复制 sourceData 的数据到当前Json
+	 *
 	 * @param sourceData
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public JSONObject mapReplace(JSONObject sourceData){
+
+	public JSONObject mapReplace(JSONObject sourceData) {
 		String localkey;
-		for(String key : sourceData.keySet()) {
+		for (String key : sourceData.keySet()) {
 			if (mapTable.containsKey(key)) {
 				localkey = mapTable.get(key);
 				if (this.has(localkey)) {

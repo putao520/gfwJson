@@ -16,24 +16,6 @@ import java.util.Map;
  * @author FangYidong<fangyidong @ yahoo.com.cn>
  */
 public class JSONValue {
-    /**
-     * Parse JSON text into java object from the input source.
-     * Please use parseWithException() if you don't want to ignore the exception.
-     *
-     * @param in
-     * @return Instance of the following:
-     * org.json.simple.JSONObject,
-     * org.json.simple.JSONArray,
-     * java.lang.String,
-     * java.lang.Number,
-     * java.lang.Boolean,
-     * null
-     * @see org.json.gsc.parser.JSONParser#parse(Reader)
-     * @see #parseWithException(Reader)
-     * @deprecated this method may throw an {@code Error} instead of returning
-     * {@code null}; please use {@link JSONValue#parseWithException(Reader)}
-     * instead
-     */
     public static Object parse(Reader in) {
         try {
             JSONParser parser = new JSONParser();
@@ -44,27 +26,16 @@ public class JSONValue {
         }
     }
 
-    /**
-     * Parse JSON text into java object from the given string.
-     * Please use parseWithException() if you don't want to ignore the exception.
-     *
-     * @param s
-     * @return Instance of the following:
-     * org.json.simple.JSONObject,
-     * org.json.simple.JSONArray,
-     * java.lang.String,
-     * java.lang.Number,
-     * java.lang.Boolean,
-     * null
-     * @see org.json.gsc.parser.JSONParser#parse(Reader)
-     * @see #parseWithException(Reader)
-     * @deprecated this method may throw an {@code Error} instead of returning
-     * {@code null}; please use {@link JSONValue#parseWithException(String)}
-     * instead
-     */
     public static Object parse(String s) {
         StringReader in = new StringReader(s);
-        return parse(in);
+        try {
+            return parseWithException(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
