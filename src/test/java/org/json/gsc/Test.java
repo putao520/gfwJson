@@ -38,25 +38,26 @@ public class Test extends TestCase {
 		s="{}";
 		obj=JSONValue.parse(s);
 		assertEquals("{}",obj.toString());
-		
-		s="[5,]";
-		obj=JSONValue.parse(s);
-		assertEquals("[5]",obj.toString());
-		
-		s="[5,,2]";
-		obj=JSONValue.parse(s);
-		assertEquals("[5,2]",obj.toString());
-		
-		s="[\"hello\\bworld\\\"abc\\tdef\\\\ghi\\rjkl\\n123\\u4e2d\"]";
-		obj=JSONValue.parse(s);
-		assertEquals("hello\bworld\"abc\tdef\\ghi\rjkl\n123中",((List)obj).get(0).toString());
-		
+
+		s = "[5,]";
+		obj = JSONValue.parse(s);
+		assertEquals("[5]", obj.toString());
+
+		s = "[5,,2]";
+		obj = JSONValue.parse(s);
+		assertEquals("[5,2]", obj.toString());
+
+		s = "[\"hello\\bworld\\\"abc\\tdef\\\\ghi\\rjkl\\n123\\u4e2d\"]";
+		obj = JSONValue.parse(s);
+		var r = ((List) obj).get(0).toString();
+		var l = "hello\bworld\"abc\tdef\\ghi\rjkl\n123中";
+		assertEquals(l, r);
+
 		JSONParser parser = new JSONParser();
-		s="{\"name\":";
-		try{
+		s = "{\"name\":";
+		try {
 			obj = parser.parse(s);
-		}
-		catch(ParseException pe){
+		} catch (ParseException pe) {
 			assertEquals(ParseException.ERROR_UNEXPECTED_TOKEN, pe.getErrorType());
 			assertEquals(8, pe.getPosition());
 		}

@@ -94,7 +94,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 	 *
 	 * @param collection
 	 * @param out
-	 * @param format     为0没有格式化，为1格式化
+	 * @param format     0 no format, 1 format
 	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
 	 */
 	public static void writeJSONString(Collection collection, Writer out, int format) throws IOException {
@@ -590,7 +590,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 	}
 
 	/**
-	 * 根据一个某特定字段的值,映射行数据到JSON
+	 * build a hashmap<JsonObject> from the Key
 	 */
 	public JSONObject mapsByKey(String keyName) {
 		JSONObject rJson = new JSONObject();
