@@ -3,3 +3,5 @@
 /gradle/
 /target/
 /upload.pgp
+/build.gradle
+/.gradle/
