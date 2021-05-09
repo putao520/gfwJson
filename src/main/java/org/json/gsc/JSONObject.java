@@ -26,12 +26,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		super();
 	}
 
-	/**
-	 * Allows creation of a JSONObject from a Map. After that, both the
-	 * generated JSONObject and the Map can be modified independently.
-	 *
-	 * @param map
-	 */
 	public JSONObject(Map map) {
 		super(map);
 	}
@@ -62,15 +56,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return this;
 	}
 
-	/**
-	 * Encode a map into JSON text and write it to out.
-	 * If this map is also a JSONAware or JSONStreamAware, JSONAware or JSONStreamAware specific behaviours will be ignored at this top level.
-	 *
-	 * @param map
-	 * @param out
-	 * @param format
-	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
-	 */
 	public static void writeJSONString(Map map, Writer out, int format) throws IOException {
 		if (map == null) {
 			out.write("null");
@@ -109,7 +94,8 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 * Convert a map to JSON text. The result is a JSON object.
 	 * If this map is also a JSONAware, JSONAware specific behaviours will be omitted at this top level.
 	 *
-	 * @param map
+	 * @param map    map
+	 * @param format format
 	 * @return JSON text, or "null" if map is null.
 	 * @see org.json.gsc.JSONValue#toJSONString(Object)
 	 */
@@ -187,14 +173,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return r;
 	}
 
-	/**
-	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
-	 * It's the same as JSONValue.escape() only for compatibility here.
-	 *
-	 * @param s
-	 * @return
-	 * @see org.json.gsc.JSONValue#escape(String)
-	 */
 	public static String escape(String s) {
 		return JSONValue.escape(s);
 	}
@@ -470,9 +448,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		}
 		return rObject;
 	}
-	/**
-	 * 获得不包含分组的json
-	 * */
+
 	public JSONObject base(){
 		return base("#");
 	}
@@ -531,15 +507,16 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	/**建立key映射
 	 * @param localkey 本json的key
 	 * @param forgenkey 外json的对应key
-	 * @return
+	 * @return a json
 	 */
 	public JSONObject mapKey(String localkey,String forgenkey){
 		mapTable.put(forgenkey,localkey);
 		return this;
 	}
+
 	/**建立key映射
-	 * @param keys 外json key =>本json key
-	 * @return
+	 * @param keys 外json key to 本json key
+	 * @return a json
 	 */
 	@SuppressWarnings("unchecked")
 	public JSONObject mapKey(JSONObject keys) {
@@ -553,8 +530,8 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	 * k-v map to hashmap
 	 * json and mapTable, 2 hashmap contains fields copy to current json 里包含的自检复制 sourceData 的数据到当前Json
 	 *
-	 * @param sourceData
-	 * @return
+	 * @param sourceData source json
+	 * @return a json
 	 */
 
 	public JSONObject mapReplace(JSONObject sourceData) {

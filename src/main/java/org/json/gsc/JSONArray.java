@@ -12,28 +12,14 @@ import java.io.Writer;
 import java.util.*;
 import java.util.function.Function;
 
-/**
- * A JSON array. JSONObject supports java.util.List interface.
- *
- * @author FangYidong<fangyidong @ yahoo.com.cn>
- */
 public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamAware {
 	private static final long serialVersionUID = 3957988303675231981L;
 	private LinkedHashMap<Object, JSONArray<JSONObject>> groups;
 
-	/**
-	 * Constructs an empty JSONArray.
-	 */
 	public JSONArray() {
 		super();
 	}
 
-	/**
-	 * Constructs a JSONArray containing the elements of the specified
-	 * collection, in the order they are returned by the collection's iterator.
-	 *
-	 * @param c the collection whose elements are to be placed into this JSONArray
-	 */
 	public JSONArray(Collection c) {
 		super(c);
 	}
@@ -88,15 +74,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return false;
 	}
 
-	/**
-	 * Encode a list into JSON text and write it to out.
-	 * If this list is also a JSONStreamAware or a JSONAware, JSONStreamAware and JSONAware specific behaviours will be ignored at this top level.
-	 *
-	 * @param collection
-	 * @param out
-	 * @param format     0 no format, 1 format
-	 * @see org.json.gsc.JSONValue#writeJSONString(Object, Writer)
-	 */
 	public static void writeJSONString(Collection collection, Writer out, int format) throws IOException {
 		if (collection == null) {
 			out.write("null");
@@ -177,14 +154,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return (double) this.get(idx);
 	}
 
-	/**
-	 * Convert a list to JSON text. The result is a JSON array.
-	 * If this list is also a JSONAware, JSONAware specific behaviours will be omitted at this top level.
-	 *
-	 * @param collection
-	 * @return JSON text, or "null" if list is null.
-	 * @see org.json.gsc.JSONValue#toJSONString(Object)
-	 */
 	public static String toJSONString(Collection collection) {
 		return toJSONString(collection, 0);
 	}
@@ -589,9 +558,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return rObject;
 	}
 
-	/**
-	 * build a hashmap<JsonObject> from the Key
-	 */
 	public JSONObject mapsByKey(String keyName) {
 		JSONObject rJson = new JSONObject();
 		forEach(item -> {
@@ -603,9 +569,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return rJson;
 	}
 
-	/**
-	 * 设置连接交集
-	 */
 	public JSONArray joinOn(String fieldName, JSONArray foreignArray) {
 		return this.joinOn(fieldName, fieldName, foreignArray);
 	}
