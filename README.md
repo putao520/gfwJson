@@ -5,7 +5,7 @@ gfwJson is a Java library based on JSON-simple project that can be used to conve
 
 ### gfwJson Goals
  * Provide the best performance on the server-side
- * Provide simple toJSONString() and parseObject() methods to convert Java objects to JSON and vice-versa
+ * Provide simple mapper(class<?>) and mapper(object) methods to convert Java objects to JSON and vice-versa
  * Allow pre-existing unmodifiable objects to be converted to and from JSON
  * Extensive support of Java Generics
  * Allow custom representations for objects
