@@ -7,7 +7,7 @@
     <artifactId>gfwJson</artifactId>
     <packaging>bundle</packaging>
     <name>gfwJson</name>
-    <version>1.00</version>
+    <version>1.0.1</version>
 
     <description></description>
     <dependencies>

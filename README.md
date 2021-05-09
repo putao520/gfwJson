@@ -21,9 +21,9 @@ gfwJson is a Java library based on JSON-simple project that can be used to conve
 
 ```xml
 <dependency>
-    <groupId>com.alibaba</groupId>
-    <artifactId>fastjson</artifactId>
-    <version>1.00</version>
+    <groupId>io.github.putao520</groupId>
+    <artifactId>gfwJson</artifactId>
+    <version>1.0.1</version>
 </dependency>
 ```
 
