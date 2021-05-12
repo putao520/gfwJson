@@ -11,7 +11,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -637,6 +636,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		try {
 			var type = field.getType();
 			var val = field.get(o);
+			if (val == null) {
+				return null;
+			}
 			// array
 			if (type.isArray()) {
 				JSONArray arr = JSONArray.build();
@@ -658,11 +660,16 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		JSONObject r = JSONObject.build();
 		var fields = cls.getDeclaredFields();
 		for (Field field : fields) {
+			/*
 			if (field.getModifiers() != Modifier.PRIVATE) {
 				continue;
 			}
+			 */
 			field.setAccessible(true);
-			r.put(field.getName(), toMapperJson(o, field, canArray));
+			var val = toMapperJson(o, field, canArray);
+			if (val != null) {
+				r.put(field.getName(), val);
+			}
 		}
 		return r;
 	}
@@ -674,6 +681,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
 	private Object toMapperObject(Field field) {
 		var v = get(field.getName());
+		if (v == null) {
+			return null;
+		}
 		var type = field.getType();
 		// if value is Json
 		if (v instanceof JSONObject) {
@@ -693,6 +703,18 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 			} else {
 				return v;
 			}
+		} else if (type.getSimpleName().equalsIgnoreCase("int")) {
+			return Integer.parseInt(v.toString());
+		} else if (type.getSimpleName().equalsIgnoreCase("long")) {
+			return Long.parseLong(v.toString());
+		} else if (type.getSimpleName().equalsIgnoreCase("float")) {
+			return Float.parseFloat(v.toString());
+		} else if (type.getSimpleName().equalsIgnoreCase("double")) {
+			return Double.parseDouble(v.toString());
+		} else if (type.getSimpleName().equalsIgnoreCase("BigDecimal")) {
+			return BigDecimal.valueOf(Long.parseLong(v.toString()));
+		} else if (type.getSimpleName().equalsIgnoreCase("BigInteger")) {
+			return BigInteger.valueOf(Long.parseLong(v.toString()));
 		} else {
 			return v;
 		}
@@ -706,16 +728,17 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 			var constructor = cls.getConstructor();
 			var o = constructor.newInstance();
 			for (Field field : fields) {
-				if (field.getModifiers() != Modifier.PRIVATE) {
-					continue;
-				}
+//				if (field.getModifiers() != Modifier.PRIVATE) {
+//					continue;
+//				}
 				field.setAccessible(true);
 				var result = toMapperObject(field);
-				field.set(o, (field.getType().isArray()) ?
-						GenericsArray.getArray(field.getType().getComponentType(), (Object[]) result) :
-						result
-				);
-
+				if (result != null) {
+					field.set(o, (field.getType().isArray()) ?
+							GenericsArray.getArray(field.getType().getComponentType(), (Object[]) result) :
+							result
+					);
+				}
 			}
 			return o;
 		} catch (NoSuchMethodException e) {

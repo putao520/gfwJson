@@ -1,9 +1,6 @@
 /build/
 /.idea/
-/gradle/
 /target/
 /upload.pgp
-/build.gradle
 /.gradle/
-/gradle/
 /pom.xml
