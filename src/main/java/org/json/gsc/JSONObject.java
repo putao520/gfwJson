@@ -381,7 +381,8 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	}
 
 	public boolean check(String k, Object v) {
-		return has(k) && get(k).equals(v);
+		var _v = (v instanceof Integer) ? Long.valueOf(v.toString()) : v;
+		return has(k) && get(k).equals(_v);
 	}
 
 	public JSONObject escapeHtmlPut(String key, Object value) {
