@@ -752,4 +752,19 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 			throw new RuntimeException("InvocationTarget");
 		}
 	}
+
+	public Properties toProperties() {
+		Object obj2;
+		String key;
+		Properties pro = new Properties();
+		for (String obj : this.keySet()) {
+			key = obj;
+			obj2 = get(key);
+			if (obj2 instanceof Long) {
+				obj2 = ((Long) obj2).intValue();
+			}
+			pro.put(key, obj2);
+		}
+		return pro.size() > 0 ? pro : null;
+	}
 }
