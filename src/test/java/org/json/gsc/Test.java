@@ -49,8 +49,8 @@ public class Test extends TestCase {
 
 		s = "[\"hello\\bworld\\\"abc\\tdef\\\\ghi\\rjkl\\n123\\u4e2d\"]";
 		obj = JSONValue.parse(s);
-		var r = ((List) obj).get(0).toString();
-		var l = "hello\bworld\"abc\tdef\\ghi\rjkl\n123中";
+		String r = ((List) obj).get(0).toString();
+		String l = "hello\bworld\"abc\tdef\\ghi\rjkl\n123中";
 		assertEquals(l, r);
 
 		JSONParser parser = new JSONParser();

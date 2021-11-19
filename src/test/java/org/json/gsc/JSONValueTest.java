@@ -259,19 +259,19 @@ public class JSONValueTest extends TestCase {
 	public void testSimpleJsonToObject() {
 		// json->object
 		JSONObject json = JSONObject.build();
-		var o = json.put("d", 12.d).put("f", 16.f).mapper(ChildData.class);
+		ChildData o = json.put("d", 12.d).put("f", 16.f).mapper(ChildData.class);
 		assertEquals(o.getD(), 12.d);
 		assertEquals(o.getF(), 16.f);
 	}
 
 	public void testJsonToObject() {
-		var cdArr = JSONArray.<JSONObject>build();
+		JSONArray cdArr = JSONArray.<JSONObject>build();
 		for (int i = 0; i < 3; i++) {
 			cdArr.put(JSONObject.build("d", 55.d + i).put("f", 66.f + i));
 		}
 		// json->object
 		JSONObject json = JSONObject.build();
-		var o = json
+		Data o = json
 				.put("name", "putao520")
 				.put("val", 16)
 				.put("child", JSONObject.build("d", 55.d).put("f", 66.f))
@@ -286,12 +286,12 @@ public class JSONValueTest extends TestCase {
 				.mapper(Data.class);
 		assertEquals(o.getName(), "putao520");
 		assertEquals(o.getVal(), 16);
-		var rCd = o.getChild();
+		ChildData rCd = o.getChild();
 		assertEquals(rCd.getD(), 55.d);
 		assertEquals(rCd.getF(), 66.f);
-		var rCdArr = o.getChildArr();
+		ChildData[] rCdArr = o.getChildArr();
 		for (int i = 0; i < 3; i++) {
-			var _cd = rCdArr[i];
+			ChildData _cd = rCdArr[i];
 			assertEquals(_cd.getD(), 55.d + i);
 			assertEquals(_cd.getF(), 66.f + i);
 		}
@@ -304,7 +304,7 @@ public class JSONValueTest extends TestCase {
 		}
 		JSONArray<JSONObject> jaj = o.getJsonArrayJson();
 		System.out.println(jaj);
-		for (var v : jaj) {
+		for (JSONObject v : jaj) {
 			assertTrue(v.containsKey("id"));
 		}
 	}
@@ -314,7 +314,7 @@ public class JSONValueTest extends TestCase {
 		ChildData cd = new ChildData();
 		cd.setD(12.d);
 		cd.setF(16.f);
-		var j = JSONObject.mapper(cd);
+		JSONObject j = JSONObject.mapper(cd);
 		assertEquals(j.getDouble("d"), 12.d);
 		assertEquals(j.getFloat("f"), 16.f);
 	}

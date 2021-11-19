@@ -9,6 +9,8 @@ import org.json.gsc.parser.JSONParser;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
 
@@ -140,18 +142,122 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 	}
 
 	public int getInt(int idx) {
-		return (int) this.get(idx);
+		int r = 0;
+		Object in = get(idx);
+		if (in == null) {
+			return r;
+		}
+		try {
+			if (in instanceof Long) {
+				r = ((Long) in).intValue();
+			} else if (in instanceof Integer) {
+				r = (Integer) in;
+			} else if (in instanceof String) {
+				r = Integer.valueOf(((String) in).trim());
+			} else if (in instanceof Double) {
+				r = ((Double) in).intValue();
+			} else if (in instanceof Float) {
+				r = ((Float) in).intValue();
+			} else if (in instanceof Boolean) {
+				r = (Boolean) in ? 0 : 1;
+			} else if (in instanceof BigInteger) {
+				r = ((BigInteger) in).intValue();
+			} else if (in instanceof BigDecimal) {
+				r = ((BigDecimal) in).intValue();
+			}
+		} catch (Exception e) {
+			r = 0;
+		}
+		return r;
 	}
 
 	public long getLong(int idx) {
-		return (long) this.get(idx);
+		long r = 0;
+		Object in = get(idx);
+		if (in == null) {
+			return r;
+		}
+		try {
+			if (in instanceof Long) {
+				r = (Long) in;
+			} else if (in instanceof Integer) {
+				r = ((Integer) in).longValue();
+			} else if (in instanceof String) {
+				r = Long.valueOf(((String) in).trim());
+			} else if (in instanceof Double) {
+				r = ((Double) in).longValue();
+			} else if (in instanceof Float) {
+				r = ((Float) in).longValue();
+			} else if (in instanceof Boolean) {
+				r = (Boolean) in ? 0 : 1;
+			} else if (in instanceof BigInteger) {
+				r = ((BigInteger) in).longValue();
+			} else if (in instanceof BigDecimal) {
+				r = ((BigDecimal) in).longValue();
+			}
+		} catch (Exception e) {
+			r = 0;
+		}
+		return r;
 	}
 
 	public float getFloat(int idx) {
-		return (float)this.get(idx);
+		Object in = get(idx);
+		float r = 0.f;
+		if (in == null) {
+			return r;
+		}
+		try {
+			if (in instanceof Long) {
+				r = ((Long) in).floatValue();
+			} else if (in instanceof Integer) {
+				r = ((Integer) in).floatValue();
+			} else if (in instanceof String) {
+				r = Float.valueOf(((String) in).trim());
+			} else if (in instanceof Double) {
+				r = ((Double) in).floatValue();
+			} else if (in instanceof Float) {
+				r = (Float) in;
+			} else if (in instanceof Boolean) {
+				r = (Boolean) in ? 0.0f : 1.0f;
+			} else if (in instanceof BigInteger) {
+				r = ((BigInteger) in).floatValue();
+			} else if (in instanceof BigDecimal) {
+				r = ((BigDecimal) in).floatValue();
+			}
+		} catch (Exception e) {
+			r = 0.f;
+		}
+		return r;
 	}
-	public double getDouble(int idx){
-		return (double) this.get(idx);
+	public double getDouble(int idx) {
+		double r = 0.d;
+		Object in = get(idx);
+		if (in == null) {
+			return r;
+		}
+		try {
+			if (in instanceof Long) {
+				r = ((Long) in).doubleValue();
+			} else if (in instanceof Integer) {
+				r = ((Integer) in).doubleValue();
+			} else if (in instanceof String) {
+				r = Double.valueOf(((String) in).trim());
+			} else if (in instanceof Double) {
+				r = ((Double) in);
+			} else if (in instanceof Float) {
+				r = ((Float) in).doubleValue();
+			} else if (in instanceof Boolean) {
+				r = (Boolean) in ? 0.0d : 1.0d;
+			} else if (in instanceof BigInteger) {
+				r = ((BigInteger) in).doubleValue();
+			} else if (in instanceof BigDecimal) {
+				r = ((BigDecimal) in).doubleValue();
+			}
+		} catch (Exception e) {
+			r = 0.d;
+		}
+		return r;
 	}
 
 	public static String toJSONString(Collection collection) {

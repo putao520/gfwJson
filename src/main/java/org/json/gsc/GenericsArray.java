@@ -9,13 +9,13 @@ public class GenericsArray {
     }
 
     public static <T> T[] getArray(Class<T> componentType, List<T> array) {
-        var arr = (T[]) Array.newInstance(componentType, array.size());
+        T[] arr = (T[]) Array.newInstance(componentType, array.size());
         array.toArray(arr);
         return arr;
     }
 
     public static <T> T[] getArray(Class<T> componentType, Object[] array) {
-        var arr = (T[]) Array.newInstance(componentType, array.length);
+        T[] arr = (T[]) Array.newInstance(componentType, array.length);
         for (int i = 0; i < array.length; i++) {
             arr[i] = (T) array[i];
         }

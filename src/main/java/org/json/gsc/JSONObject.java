@@ -9,6 +9,7 @@ import org.json.gsc.parser.JSONParser;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -380,9 +381,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return (JSONObject) val;
 	}
 
-	public boolean check(String k, Object v) {
-		var _v = (v instanceof Integer) ? Long.valueOf(v.toString()) : v;
-		return has(k) && get(k).equals(_v);
+	private static String toUpperFirstChar(String str) {
+		char[] arr = str.toLowerCase(Locale.ROOT).toCharArray();
+		arr[0] -= 32;
+		return String.valueOf(arr);
 	}
 
 	public JSONObject escapeHtmlPut(String key, Object value) {
@@ -591,10 +593,27 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		}
 	}
 
-	private static String toUpperFirstChar(String str) {
-		var arr = str.toLowerCase(Locale.ROOT).toCharArray();
-		arr[0] -= 32;
-		return String.valueOf(arr);
+	private static Object toMapperJson(Object o, Field field, boolean canArray) {
+		try {
+			Class<?> type = field.getType();
+			Object val = field.get(o);
+			if (val == null) {
+				return null;
+			}
+			// array
+			if (type.isArray()) {
+				JSONArray arr = JSONArray.build();
+				Object[] _val = (Object[]) val;
+				for (Object v : _val) {
+					arr.put(toMapperJsonSingle(v, type.getComponentType(), false));
+				}
+				return arr;
+			} else {
+				return toMapperJsonSingle(val, type, canArray);
+			}
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Field [" + field.getName() + "] IllegalAccess");
+		}
 	}
 
 	private static boolean isJsonType(Object o) {
@@ -633,33 +652,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		return o;
 	}
 
-	private static Object toMapperJson(Object o, Field field, boolean canArray) {
-		try {
-			var type = field.getType();
-			var val = field.get(o);
-			if (val == null) {
-				return null;
-			}
-			// array
-			if (type.isArray()) {
-				JSONArray arr = JSONArray.build();
-				Object[] _val = (Object[]) val;
-				for (Object v : _val) {
-					arr.put(toMapperJsonSingle(v, type.getComponentType(), false));
-				}
-				return arr;
-			} else {
-				return toMapperJsonSingle(val, type, canArray);
-			}
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Field [" + field.getName() + "] IllegalAccess");
-		}
-	}
-
 	private static JSONObject mapper(Object o, boolean canArray) {
 		Class<?> cls = o.getClass();
 		JSONObject r = JSONObject.build();
-		var fields = cls.getDeclaredFields();
+		Field[] fields = cls.getDeclaredFields();
 		for (Field field : fields) {
 			/*
 			if (field.getModifiers() != Modifier.PRIVATE) {
@@ -667,12 +663,17 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 			}
 			 */
 			field.setAccessible(true);
-			var val = toMapperJson(o, field, canArray);
+			Object val = toMapperJson(o, field, canArray);
 			if (val != null) {
 				r.put(field.getName(), val);
 			}
 		}
 		return r;
+	}
+
+	public boolean check(String k, Object v) {
+		Long _v = (v instanceof Integer) ? Long.valueOf(v.toString()) : (Long) v;
+		return has(k) && get(k).equals(_v);
 	}
 
 	// object->json
@@ -681,20 +682,20 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	}
 
 	private Object toMapperObject(Field field) {
-		var v = get(field.getName());
+		Object v = get(field.getName());
 		if (v == null) {
 			return null;
 		}
-		var type = field.getType();
+		Class<?> type = field.getType();
 		// if value is Json
 		if (v instanceof JSONObject) {
 			return (type != JSONObject.class) ? ((JSONObject) v).mapper(field.getType()) : v;
 		} else if (v instanceof JSONArray) {
-			var jsonArray = (JSONArray) v;
+			JSONArray jsonArray = (JSONArray) v;
 			if (type != JSONArray.class) {
 				List<Object> arrayList = new ArrayList<>();
 				for (Object i : jsonArray) {
-					var item = (JSONObject) i;
+					JSONObject item = (JSONObject) i;
 					arrayList.add(type.isPrimitive() ?
 							item :
 							item.mapper(type.getComponentType())
@@ -723,17 +724,17 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
 	// json->object
 	public <T> T mapper(Class<T> cls) {
-		var fields = cls.getDeclaredFields();
+		Field[] fields = cls.getDeclaredFields();
 		try {
 			// var constructor = cls.getDeclaredConstructor(null);
-			var constructor = cls.getConstructor();
-			var o = constructor.newInstance();
+			Constructor<T> constructor = cls.getConstructor();
+			T o = constructor.newInstance();
 			for (Field field : fields) {
 //				if (field.getModifiers() != Modifier.PRIVATE) {
 //					continue;
 //				}
 				field.setAccessible(true);
-				var result = toMapperObject(field);
+				Object result = toMapperObject(field);
 				if (result != null) {
 					field.set(o, (field.getType().isArray()) ?
 							GenericsArray.getArray(field.getType().getComponentType(), (Object[]) result) :
