@@ -8,7 +8,11 @@ import org.json.gsc.parser.JSONParser;
 import org.json.gsc.parser.ParseException;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 
@@ -217,4 +221,170 @@ public class JSONValue {
         }//for
     }
 
+    public static int IntValue(Object val) {
+        int ri = 0;
+        try {
+            if (val instanceof Integer) {
+                ri = (int) val;
+            } else if (val instanceof Long) {
+                ri = ((Long) val).intValue();
+            } else if (val instanceof Double) {
+                ri = ((Double) val).intValue();
+            } else if (val instanceof Float) {
+                ri = ((Float) val).intValue();
+            } else if (val instanceof JSONObject) {
+                ri = ((JSONObject) val).getInt("$numberInt");
+            } else if (val instanceof String) {
+                ri = Double.valueOf((String) val).intValue();
+            } else if (val instanceof BigDecimal) {
+                ri = ((BigDecimal) val).intValue();
+            } else if (val instanceof BigInteger) {
+                ri = ((BigInteger) val).intValue();
+            }
+
+        } catch (Exception e) {
+            ri = 0;
+        }
+        return ri;
+    }
+
+    public static double DoubleValue(Object val) {
+        double ri = 0.00;
+        try {
+            if (val instanceof Integer) {
+                ri = ((Integer) val).doubleValue();
+            } else if (val instanceof Long) {
+                ri = ((Long) val).doubleValue();
+            } else if (val instanceof Double) {
+                ri = (double) val;
+            } else if (val instanceof Float) {
+                ri = ((Float) val).doubleValue();
+            } else if (val instanceof JSONObject) {
+                ri = ((JSONObject) val).getDouble("$numberDouble");
+            } else if (val instanceof String) {
+                ri = Double.valueOf((String) val).doubleValue();
+            } else if (val instanceof BigDecimal) {
+                ri = ((BigDecimal) val).doubleValue();
+            } else if (val instanceof BigInteger) {
+                ri = ((BigInteger) val).doubleValue();
+            }
+
+        } catch (Exception e) {
+            ri = 0.00;
+        }
+        return ri;
+    }
+
+    public static float FloatValue(Object val) {
+        float ri = 0.00f;
+        try {
+            if (val instanceof Integer) {
+                ri = ((Integer) val).floatValue();
+            } else if (val instanceof Long) {
+                ri = ((Long) val).floatValue();
+            } else if (val instanceof Double) {
+                ri = ((Double) val).floatValue();
+            } else if (val instanceof Float) {
+                ri = (float) val;
+            } else if (val instanceof JSONObject) {
+                ri = ((JSONObject) val).getFloat("$numberFloat");
+            } else if (val instanceof String) {
+                ri = Double.valueOf((String) val).floatValue();
+            } else if (val instanceof BigDecimal) {
+                ri = ((BigDecimal) val).floatValue();
+            } else if (val instanceof BigInteger) {
+                ri = ((BigInteger) val).floatValue();
+            }
+
+        } catch (Exception e) {
+            ri = 0.00f;
+        }
+        return ri;
+    }
+
+    public static long LongValue(Object val) {
+        long ri = 0;
+        try {
+            if (val instanceof Integer) {
+                ri = ((Integer) val).longValue();
+            } else if (val instanceof Long) {
+                ri = (long) val;
+            } else if (val instanceof Double) {
+                ri = ((Double) val).longValue();
+            } else if (val instanceof Float) {
+                ri = ((Float) val).longValue();
+            } else if (val instanceof JSONObject) {
+                ri = ((JSONObject) val).getLong("$numberLong");
+            } else if (val instanceof String) {
+                ri = Long.getLong((String) val);
+            } else if (val instanceof BigDecimal) {
+                ri = ((BigDecimal) val).longValue();
+            } else if (val instanceof BigInteger) {
+                ri = ((BigInteger) val).longValue();
+            }
+
+        } catch (Exception e) {
+            ri = 0L;
+        }
+        return ri;
+    }
+
+    public static boolean BooleanValue(Object val) {
+        boolean ri;
+        try {
+            ri = (boolean) val;
+        } catch (Exception e) {
+            if (val instanceof String) {
+                String v = (String) val;
+                if (v.equals("0")) {
+                    ri = false;
+                } else if (v.equals("1")) {
+                    ri = true;
+                } else {
+                    ri = Boolean.valueOf(v);
+                }
+            } else {
+                ri = false;
+            }
+        }
+        return ri;
+    }
+
+    public static JSONObject JsonValue(Object val) {
+        if (val instanceof JSONObject) {
+            return (JSONObject) val;
+        }
+        if (val instanceof String) {
+            return JSONObject.toJSON((String) val);
+        }
+        try {
+            val = JSONObject.toJSON(val.toString());
+        } catch (Exception e) {
+            val = null;
+        }
+        return (JSONObject) val;
+    }
+
+    public static <T> JSONArray<T> JsonArrayValue(Object val) {
+        if (val instanceof JSONArray) {
+            return (JSONArray<T>) val;
+        }
+        if (val instanceof String) {
+            return JSONArray.toJSONArray((String) val);
+        }
+        if (val instanceof JSONObject) {
+            return JSONArray.build((T) val);
+        }
+        if (val instanceof ArrayList<?>) {
+            JSONArray rArray = new JSONArray<T>();
+            ((List<?>) val).forEach(e -> rArray.add(e));
+            return rArray;
+        }
+        try {
+            val = JSONArray.<T>toJSONArray(val.toString());
+        } catch (Exception e) {
+            val = JSONArray.<T>build();
+        }
+        return (JSONArray<T>) val;
+    }
 }

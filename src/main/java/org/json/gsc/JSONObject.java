@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
-public class JSONObject extends HashMap<String, Object> implements Map<String, Object>, JSONAware, JSONStreamAware {
+public class JSONObject extends HashMap<String, Object> implements Map<String, Object>, JSONAware, JSONStreamAware, IJSONObject<JSONObject> {
 
 	private static final long serialVersionUID = -503443796854799292L;
 
@@ -54,6 +54,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	public JSONObject removeAll() {
 		super.clear();
 		return this;
+	}
+
+	public byte[] getBytes() {
+		return toString().getBytes();
 	}
 
 	public static void writeJSONString(Map map, Writer out, int format) throws IOException {
@@ -231,154 +235,27 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	}
 
 	public int getInt(String key) {
-		int ri = 0;
-		Object val = get(key);
-		try{
-			if (val instanceof Integer) {
-				ri = (int) val;
-			} else if (val instanceof Long) {
-				ri = ((Long) val).intValue();
-			} else if (val instanceof Double) {
-				ri = ((Double) val).intValue();
-			} else if (val instanceof Float) {
-				ri = ((Float) val).intValue();
-			} else if (val instanceof JSONObject) {
-				ri = ((JSONObject) val).getInt("$numberInt");
-			} else if (val instanceof String) {
-				ri = Double.valueOf((String) val).intValue();
-			} else if (val instanceof BigDecimal) {
-				ri = ((BigDecimal) val).intValue();
-			} else if (val instanceof BigInteger) {
-				ri = ((BigInteger) val).intValue();
-			}
-
-		} catch (Exception e) {
-			ri = 0;
-		}
-		return ri;
+		return JSONValue.IntValue(get(key));
 	}
 
 	public double getDouble(String key) {
-		double ri = 0.00;
-		Object val = get(key);
-		try {
-			if (val instanceof Integer) {
-				ri = ((Integer) val).doubleValue();
-			} else if (val instanceof Long) {
-				ri = ((Long) val).doubleValue();
-			} else if (val instanceof Double) {
-				ri = (double) val;
-			} else if (val instanceof Float) {
-				ri = ((Float) val).doubleValue();
-			} else if (val instanceof JSONObject) {
-				ri = ((JSONObject) val).getDouble("$numberDouble");
-			} else if (val instanceof String) {
-				ri = Double.valueOf((String) val).doubleValue();
-			} else if (val instanceof BigDecimal) {
-				ri = ((BigDecimal) val).doubleValue();
-			} else if (val instanceof BigInteger) {
-				ri = ((BigInteger) val).doubleValue();
-			}
-
-		} catch (Exception e) {
-			ri = 0.00;
-		}
-		return ri;
+		return JSONValue.DoubleValue(get(key));
 	}
 
 	public float getFloat(String key) {
-		float ri = 0.00f;
-		Object val = get(key);
-		try {
-			if (val instanceof Integer) {
-				ri = ((Integer) val).floatValue();
-			} else if (val instanceof Long) {
-				ri = ((Long) val).floatValue();
-			} else if (val instanceof Double) {
-				ri = ((Double) val).floatValue();
-			} else if (val instanceof Float) {
-				ri = (float) val;
-			} else if (val instanceof JSONObject) {
-				ri = ((JSONObject) val).getFloat("$numberFloat");
-			} else if (val instanceof String) {
-				ri = Double.valueOf((String) val).floatValue();
-			} else if (val instanceof BigDecimal) {
-				ri = ((BigDecimal) val).floatValue();
-			} else if (val instanceof BigInteger) {
-				ri = ((BigInteger) val).floatValue();
-			}
-
-		} catch (Exception e) {
-			ri = 0.00f;
-		}
-		return ri;
+		return JSONValue.FloatValue(get(key));
 	}
 
 	public long getLong(String key) {
-		long ri = 0;
-		Object val = get(key);
-		try {
-			if (val instanceof Integer) {
-				ri = ((Integer) val).longValue();
-			} else if (val instanceof Long) {
-				ri = (long) val;
-			} else if (val instanceof Double) {
-				ri = ((Double) val).longValue();
-			} else if (val instanceof Float) {
-				ri = ((Float) val).longValue();
-			} else if (val instanceof JSONObject) {
-				ri = ((JSONObject) val).getLong("$numberLong");
-			} else if (val instanceof String) {
-				ri = Long.getLong((String) val);
-			} else if (val instanceof BigDecimal) {
-				ri = ((BigDecimal) val).longValue();
-			} else if (val instanceof BigInteger) {
-				ri = ((BigInteger) val).longValue();
-			}
-
-		}
-		catch(Exception e) {
-			ri = 0L;
-		}
-		return ri;
+		return JSONValue.LongValue(get(key));
 	}
 
 	public boolean getBoolean(String key){
-		boolean ri;
-		try {
-			ri = (boolean) get(key);
-		} catch (Exception e) {
-			Object val = get(key);
-			if (val instanceof String) {
-				String v = (String) val;
-				if (v.equals("0")) {
-					ri = false;
-				} else if (v.equals("1")) {
-					ri = true;
-				} else {
-					ri = Boolean.valueOf(v);
-				}
-			} else{
-				ri = false;
-			}
-		}
-		return ri;
+		return JSONValue.BooleanValue(get(key));
 	}
 
 	public JSONObject getJson(String key){
-		Object val = get(key);
-		if( val instanceof JSONObject ){
-			return (JSONObject)val;
-		}
-		if( val instanceof String ){
-			return JSONObject.toJSON((String) val);
-		}
-		try {
-			val = JSONObject.toJSON(val.toString());
-		} catch (Exception e) {
-			val = null;
-		}
-		return (JSONObject) val;
+		return JSONValue.JsonValue(get(key));
 	}
 
 	private static String toUpperFirstChar(String str) {
@@ -414,27 +291,8 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	}
 
 	public <T> JSONArray<T> getJsonArray(String key) {
-		Object val = get(key);
-		if (val instanceof JSONArray) {
-			return (JSONArray<T>) val;
-		}
-		if (val instanceof String) {
-			return JSONArray.toJSONArray((String) val);
-		}
-		if (val instanceof JSONObject) {
-			return JSONArray.build((T) val);
-		}
-		if( val instanceof ArrayList<?> ) {
-			JSONArray rArray = new JSONArray<T>();
-			((List<?>) val).forEach(e -> rArray.add(e));
-			return rArray;
-		}
-		try {
-			val = JSONArray.<T>toJSONArray(val.toString());
-		} catch (Exception e) {
-			val = JSONArray.<T>build();
-		}
-		return (JSONArray<T>) val;
+		return JSONValue.JsonArrayValue(get(key));
+
 	}
 
 	public static final JSONObject toJSON(String str) {
