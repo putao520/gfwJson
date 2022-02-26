@@ -76,13 +76,30 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
         return this;
     }
 
+    public void forEach(Consumer<T> fn) {
+        toReader((in) -> {
+            JSONParser parser = new JSONParser(bufferSize);
+            // 利用溢出时判断是否包含目标key,包含跳出解析（否则重用Map缓存）
+            parser.onListOverflow((list) -> {
+                list.forEach(fn);
+                return false;
+            });
+            try {
+                ((JSONArray<T>) parser.parse(in, (ContainerFactory) null, true)).forEach(fn);
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
+    }
+
     public T get(int idx) {
         return toReader((in) -> {
             JSONArray<T> rArray = JSONArray.build();
             JSONParser parser = new JSONParser(bufferSize);
             // JSONParser parser = new JSONParser(10);
             // 利用溢出时判断是否包含目标key,包含跳出解析（否则重用Map缓存）
-            parser.onMapOverflow((list) -> {
+            parser.onListOverflow((list) -> {
                 int pl = parser.getPreloadListSize();
                 return (idx > pl && idx < (pl + list.size()));
             });

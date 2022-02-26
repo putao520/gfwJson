@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -88,6 +89,23 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
             put(entry.getKey(), entry.getValue());
         }
         return this;
+    }
+
+    public void forEach(BiConsumer<String, Object> fn) {
+        toReader((in) -> {
+            JSONParser parser = new JSONParser(bufferSize);
+            // 利用溢出时判断是否包含目标key,包含跳出解析（否则重用Map缓存）
+            parser.onMapOverflow((map) -> {
+                map.forEach(fn);
+                return false;
+            });
+            try {
+                ((JSONObject) parser.parse(in, (ContainerFactory) null, true)).forEach(fn);
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
     }
 
     public Object get(String key) {

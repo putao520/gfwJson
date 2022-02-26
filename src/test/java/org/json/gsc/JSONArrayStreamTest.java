@@ -43,5 +43,15 @@ public class JSONArrayStreamTest extends TestCase {
             System.out.println(s);
             assertEquals("[{\"name\":\"John\",\"age\":30},{\"name\":\"Mary\",\"age\":25},{\"name\":\"Peter\",\"age\":35},\"_foo2\",\"_foo2\",[\"_foo\",\"bar33333\"],312]", s);
         }
+        // 查找
+        try (stream) {
+            String s = stream.getString(4);
+            System.out.println(s);
+            assertEquals("_foo2", s);
+        }
+        // 遍历
+        try (stream) {
+            stream.forEach(System.out::println);
+        }
     }
 }

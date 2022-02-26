@@ -43,5 +43,11 @@ public class JSONObjectStreamTest extends TestCase {
             System.out.println(s);
             assertEquals("bar", s);
         }
+        // 遍历
+        try (stream) {
+            stream.forEach((key, value) -> {
+                System.out.println(key + ":" + value);
+            });
+        }
     }
 }
