@@ -11,8 +11,13 @@ import java.io.IOException;
  * 文件流方式操作JSON文件，不提供完整的JSON接口
  */
 public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObjectStream> {
+
     public JSONObjectStream(File file) {
-        super(file, '}');
+        super(file, '}', null);
+    }
+
+    public JSONObjectStream(File file, BigJsonValue bigJsonValue) {
+        super(file, '}', bigJsonValue);
     }
 
     public JSONObjectStream put(String key, Object value) {

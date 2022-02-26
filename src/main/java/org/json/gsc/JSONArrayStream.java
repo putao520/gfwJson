@@ -9,7 +9,11 @@ import java.io.IOException;
 
 public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArrayStream<T>> {
     public JSONArrayStream(File file) {
-        super(file, ']');
+        super(file, ']', null);
+    }
+
+    public JSONArrayStream(File file, BigJsonValue bigJsonValue) {
+        super(file, ']', bigJsonValue);
     }
 
     public JSONArrayStream<T> add(T value) {
