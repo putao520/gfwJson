@@ -113,6 +113,7 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
     }
 
     public Object get(String key) {
+        // 重置
         return toReader((in) -> {
             JSONObject rObject = JSONObject.build();
             JSONParser parser = new JSONParser(bufferSize);
