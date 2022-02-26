@@ -53,5 +53,16 @@ public class JSONArrayStreamTest extends TestCase {
         try (stream) {
             stream.forEach(System.out::println);
         }
+        // 打印 stream
+        try (stream) {
+            String s = stream.getJsonStream(0).getString("name");
+            System.out.println("{dict}" + s);
+            assertEquals("John", s);
+        }
+        try (stream) {
+            String s = stream.getJsonArrayStream(5).getString(1);
+            System.out.println("{list}" + s);
+            assertEquals("bar33333", s);
+        }
     }
 }

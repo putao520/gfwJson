@@ -25,6 +25,10 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
         super(file, '}', bigJsonValue);
     }
 
+    public JSONObjectStream(Object constValue) {
+        super(constValue, '}');
+    }
+
     public void putKey(String key, Writer out) {
         try {
             if (first) {
@@ -159,6 +163,24 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
 
     public JSONObject getJson(String key) {
         return JSONValue.JsonValue(get(key));
+    }
+
+    public JSONObjectStream getJsonStream(String key) {
+        Object value = get(key);
+        if (value instanceof BigJsonValue bV) {
+            return new JSONObjectStream(file, bV);
+        } else {
+            return new JSONObjectStream(value);
+        }
+    }
+
+    public <T> JSONArrayStream<T> getJsonArrayStream(String key) {
+        Object value = get(key);
+        if (value instanceof BigJsonValue bV) {
+            return new JSONArrayStream<>(file, bV);
+        } else {
+            return new JSONArrayStream<>(value);
+        }
     }
 
     public <T> JSONArray<T> getJsonArray(String key) {

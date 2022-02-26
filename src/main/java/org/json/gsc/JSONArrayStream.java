@@ -20,6 +20,10 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
         super(file, ']', bigJsonValue);
     }
 
+    public JSONArrayStream(Object constValue) {
+        super(constValue, ']');
+    }
+
     private void prefixItem(Writer out) {
         try {
             if (first) {
@@ -91,6 +95,24 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
             }
             return null;
         });
+    }
+
+    public JSONObjectStream getJsonStream(int idx) {
+        Object value = get(idx);
+        if (value instanceof BigJsonValue bV) {
+            return new JSONObjectStream(file, bV);
+        } else {
+            return new JSONObjectStream(value);
+        }
+    }
+
+    public <T> JSONArrayStream<T> getJsonArrayStream(int idx) {
+        Object value = get(idx);
+        if (value instanceof BigJsonValue bV) {
+            return new JSONArrayStream<>(file, bV);
+        } else {
+            return new JSONArrayStream<>(value);
+        }
     }
 
     public T get(int idx) {

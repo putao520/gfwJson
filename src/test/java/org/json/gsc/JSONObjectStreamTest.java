@@ -49,5 +49,16 @@ public class JSONObjectStreamTest extends TestCase {
                 System.out.println(key + ":" + value);
             });
         }
+        // 打印 stream
+        try (stream) {
+            String s = stream.getJsonStream("bar2").getString("foo");
+            System.out.println("{dict}" + s);
+            assertEquals("bar22222", s);
+        }
+        try (stream) {
+            String s = stream.getJsonArrayStream("_bar2").getString(1);
+            System.out.println("{list}" + s);
+            assertEquals("bar22222", s);
+        }
     }
 }

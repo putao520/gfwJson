@@ -15,6 +15,7 @@ public class JsonStream implements Closeable {
     protected final int bufferSize = 8192;
     private final char endSign;
     protected File file;
+    protected Object constValue;
     // 是否是空文件
     protected boolean first = true;
     // 是否最后一个字符需要替换
@@ -22,6 +23,12 @@ public class JsonStream implements Closeable {
     private final BigJsonValue bigJsonValue;
     protected JsonInputStream jis;
     protected JsonOutputStream jos;
+
+    public JsonStream(Object constValue, char endSign) {
+        this.constValue = constValue;
+        this.endSign = endSign;
+        this.bigJsonValue = null;
+    }
 
     public JsonStream(File file, char endSign, BigJsonValue bigJsonValue) {
         this.file = file;
@@ -44,7 +51,9 @@ public class JsonStream implements Closeable {
     protected BufferedReader getReader() {
         if (jis == null) {
             try {
-                jis = JsonInputStream.build(new FileInputStream(file));
+                jis = JsonInputStream.build(file != null ?
+                        new FileInputStream(file) :
+                        new ByteArrayInputStream(constValue.toString().getBytes(StandardCharsets.UTF_8)));
                 jis.getReader().mark(bufferSize);
             } catch (IOException e) {
                 e.printStackTrace();
