@@ -145,7 +145,9 @@ public class JsonStream implements Closeable {
                 br.mark(bigJsonValue.getLength());
             }
             r = fn.apply(br);
-            br.reset();
+            if (br.markSupported()) {
+                br.reset();
+            }
         } catch (IOException e) {
             e.printStackTrace();
             r = null;
