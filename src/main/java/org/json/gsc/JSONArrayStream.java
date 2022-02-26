@@ -3,9 +3,12 @@ package org.json.gsc;
 import org.json.gsc.parser.ContainerFactory;
 import org.json.gsc.parser.JSONParser;
 import org.json.gsc.parser.ParseException;
+import org.json.gsc.stream.JsonStream;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.function.Consumer;
 
 public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArrayStream<T>> {
     public JSONArrayStream(File file) {
@@ -16,15 +19,47 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
         super(file, ']', bigJsonValue);
     }
 
+    private void prefixItem(Writer out) {
+        try {
+            if (first) {
+                out.write('[');
+                first = false;
+            } else {
+                out.write(',');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONArrayStream<T> addJson(Consumer<JSONObjectStream> fn) {
+        toWriter((out) -> {
+            if (fn != null) {
+                prefixItem(out);
+                var s = this.deepClone();
+                fn.accept(s);
+                s.appendEnd();
+            }
+        });
+        return this;
+    }
+
+    public <S> JSONArrayStream<T> addJsonArray(Consumer<JSONArrayStream<S>> fn) {
+        toWriter((out) -> {
+            if (fn != null) {
+                prefixItem(out);
+                var s = this.<S>deepCloneToJSONArrayStream();
+                fn.accept(s);
+                s.appendEnd();
+            }
+        });
+        return this;
+    }
+
     public JSONArrayStream<T> add(T value) {
         toWriter((out) -> {
             try {
-                if (first) {
-                    out.write('[');
-                    first = false;
-                } else {
-                    out.write(',');
-                }
+                prefixItem(out);
                 JSONValue.writeJSONString(value, out);
             } catch (IOException e) {
                 e.printStackTrace();

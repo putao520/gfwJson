@@ -182,7 +182,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	}
 
 	public JSONObject put(Map<? extends String, ?> m) {
-		putAll(m);
+		if (m != null) {
+			putAll(m);
+		}
 		return this;
 	}
 

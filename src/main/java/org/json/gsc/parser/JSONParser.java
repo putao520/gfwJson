@@ -347,7 +347,7 @@ public class JSONParser {
 				}//switch
 				if (status == S_IN_ERROR) {
 					if (compatibility) {
-						return valueStack.removeFirst();
+						return valueStack.size() > 0 ? valueStack.removeFirst() : null;
 					} else {
 						throw new ParseException(getPosition(), ParseException.ERROR_UNEXPECTED_TOKEN, token);
 					}

@@ -3,9 +3,12 @@ package org.json.gsc;
 import org.json.gsc.parser.ContainerFactory;
 import org.json.gsc.parser.JSONParser;
 import org.json.gsc.parser.ParseException;
+import org.json.gsc.stream.JsonStream;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.function.Consumer;
 
 /**
  * 文件流方式操作JSON文件，不提供完整的JSON接口
@@ -20,26 +23,62 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
         super(file, '}', bigJsonValue);
     }
 
-    public JSONObjectStream put(String key, Object value) {
+    public void putKey(String key, Writer out) {
+        try {
+            if (first) {
+                out.write('{');
+                first = false;
+            } else {
+                out.write(',');
+            }
+            out.write('\"');
+            out.write(JSONObject.escape(String.valueOf(key)));
+            out.write('\"');
+            out.write(':');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObjectStream putJson(String key, Consumer<JSONObjectStream> fn) {
         if (!has(key)) {
             toWriter((out) -> {
-                try {
-                    if (first) {
-                        out.write('{');
-                        first = false;
-                    } else {
-                        out.write(',');
-                    }
-                    out.write('\"');
-                    out.write(JSONObject.escape(String.valueOf(key)));
-                    out.write('\"');
-                    out.write(':');
-                    JSONValue.writeJSONString(value, out);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (fn != null) {
+                    putKey(key, out);
+                    var s = this.deepClone();
+                    fn.accept(s);
+                    s.appendEnd();
                 }
             });
         }
+        return this;
+    }
+
+    public <T> JSONObjectStream putJsonArray(String key, Consumer<JSONArrayStream<T>> fn) {
+        if (!has(key)) {
+            toWriter((out) -> {
+                if (fn != null) {
+                    putKey(key, out);
+                    var s = this.<T>deepCloneToJSONArrayStream();
+                    fn.accept(s);
+                    s.appendEnd();
+                }
+            });
+        }
+        return this;
+    }
+
+    public JSONObjectStream put(String key, Object value) {
+        // if (!has(key)) {
+        toWriter((out) -> {
+            try {
+                putKey(key, out);
+                JSONValue.writeJSONString(value, out);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            });
+        // }
         return this;
     }
 
