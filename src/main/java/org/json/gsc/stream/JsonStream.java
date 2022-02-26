@@ -143,7 +143,6 @@ public class JsonStream implements Closeable {
                 br.skip(bigJsonValue.getStartPos());
                 br.mark(bigJsonValue.getLength());
             }
-            br.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
