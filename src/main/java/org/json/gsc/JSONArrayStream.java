@@ -8,6 +8,7 @@ import org.json.gsc.stream.JsonStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArrayStream<T>> {
@@ -65,6 +66,13 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
                 e.printStackTrace();
             }
         });
+        return this;
+    }
+
+    public JSONArrayStream<T> addAll(Collection<? extends T> c) {
+        for (T t : c) {
+            add(t);
+        }
         return this;
     }
 

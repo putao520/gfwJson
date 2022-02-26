@@ -8,6 +8,7 @@ import org.json.gsc.stream.JsonStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -77,8 +78,15 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            });
+        });
         // }
+        return this;
+    }
+
+    public JSONObjectStream putAll(Map<String, Object> m) {
+        for (Map.Entry<String, Object> entry : m.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
         return this;
     }
 
