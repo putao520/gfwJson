@@ -7,13 +7,13 @@
     <artifactId>gfwJson</artifactId>
 
     <name>gfwJson</name>
-    <version>2.0.1</version>
+    <version>3.0.0</version>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
