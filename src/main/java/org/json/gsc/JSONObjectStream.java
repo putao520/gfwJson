@@ -124,6 +124,7 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
+
             return rObject.get(key);
         });
     }
