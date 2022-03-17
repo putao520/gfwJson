@@ -668,31 +668,31 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		JSONObject rJson = new JSONObject();
 		forEach(item -> {
 			String vKey = ((JSONObject) item).getString(keyName);
-			if( vKey != null ){
+			if (vKey != null) {
 				rJson.put(vKey, item);
 			}
 		});
 		return rJson;
 	}
 
-	public JSONArray joinOn(String fieldName, JSONArray foreignArray) {
-		return this.joinOn(fieldName, fieldName, foreignArray);
-	}
-
-	public JSONArray joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray) {
-		return this.joinOn(ownFieldName, foreignFieldName, foreignArray, false);
-	}
-
-	public static boolean isInvalided(JSONArray array) {
+	public static <T> boolean isInvalided(JSONArray<T> array) {
 		return array == null || array.size() == 0;
 	}
 
-	public JSONArray put(V obj) {
+	public JSONArray<V> joinOn(String fieldName, JSONArray foreignArray) {
+		return this.joinOn(fieldName, fieldName, foreignArray);
+	}
+
+	public JSONArray<V> joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray) {
+		return this.joinOn(ownFieldName, foreignFieldName, foreignArray, false);
+	}
+
+	public JSONArray<V> put(V obj) {
 		add(obj);
 		return this;
 	}
 
-	public JSONArray putIfNotNull(V obj) {
+	public JSONArray<V> putIfNotNull(V obj) {
 		if (obj != null) {
 			this.put(obj);
 		}
@@ -728,7 +728,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return super.contains(v);
 	}
 
-	public JSONArray joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item) {
+	public JSONArray<V> joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item) {
 		if (foreignArray == null) {
 			this.clear();
 			return this;
@@ -820,7 +820,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return sortJsonArray(field, 1);
 	}
 
-	public JSONArray limit(int no) {
+	public JSONArray<V> limit(int no) {
 		Iterator<V> it = this.iterator();
 		int i = 0;
 		while (it.hasNext()) {
@@ -867,7 +867,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 	}
 
 
-	public <O> JSONArray mapValue(String field, Function<O, Object> func) {
+	public <O> JSONArray<V> mapValue(String field, Function<O, Object> func) {
 		for (Object v : this) {
 			JSONObject item = (JSONObject) v;
 			item.put(field, func.apply((O) item.get(field)));
@@ -876,7 +876,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 	}
 
 
-	public JSONArray mapKey(String field, Function<String, String> func) {
+	public JSONArray<V> mapKey(String field, Function<String, String> func) {
 		JSONObject item;
 		Object val;
 		for (Object o : this) {
@@ -888,7 +888,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return this;
 	}
 
-	public JSONArray flatMap(String field) {
+	public JSONArray<V> flatMap(String field) {
 		groups = new LinkedHashMap<>();
 		Iterator<V> it = this.iterator();
 		JSONObject item;
@@ -904,7 +904,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return this;
 	}
 
-	public JSONArray then(Function<JSONArray<JSONObject>, JSONArray<JSONObject>> func) {
+	public JSONArray<V> then(Function<JSONArray<JSONObject>, JSONArray<JSONObject>> func) {
 		// 异常处理
 		if (groups != null) {
 			groups.replaceAll((k, v) -> func.apply(groups.get(k)));
@@ -923,12 +923,12 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
 		return outArray;
 	}
 
-	public JSONArray put(Collection<? extends V> c) {
+	public JSONArray<V> put(Collection<? extends V> c) {
 		this.addAll(c);
 		return this;
 	}
 
-	public JSONArray putIfNotNull(Collection<? extends V> c) {
+	public JSONArray<V> putIfNotNull(Collection<? extends V> c) {
 		if (c != null) {
 			this.put(c);
 		}
