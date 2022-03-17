@@ -314,6 +314,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	public JSONObject base(){
 		return base("#");
 	}
+
 	public JSONObject base(String spiltString){
 		JSONObject newJson = new JSONObject();
 		for( String key : this.keySet() ){
@@ -327,12 +328,14 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	public JSONObject addGroup(String groupName, JSONObject input){
 		return addGroup(groupName, "#", input);
 	}
+
 	public JSONObject addGroup(String groupName, String spiltString, JSONObject input){
 		for(String key : input.keySet()){
 			this.put( groupName + spiltString + key, input.get(key) );
 		}
 		return this;
 	}
+
 	public JSONObject removeGroup(String groupName, String spiltString){
 		JSONObject newJson = new JSONObject();
 		for( String key : this.keySet() ){
@@ -347,6 +350,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	public JSONObject groupBy(String groupName){
 		return groupBy(groupName, "#");
 	}
+
 	public JSONObject groupBy(String groupName, String spiltString){
 		JSONObject newJson = new JSONObject();
 		for( String key : this.keySet() ){
@@ -357,10 +361,11 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		}
 		return newJson;
 	}
+
 	private String unionString(String[] strArray,String splitString){
 		String rs = "";
 		int l = strArray.length;
-		for(int i =1; i<l;i++){
+		for(int i =1; i<l; i++){
 			rs = rs + strArray[i] + splitString;
 		}
 		return l > 1 ? rs.substring(0, rs.length()-splitString.length()) : strArray[0];
@@ -627,5 +632,33 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 			pro.put(key, obj2);
 		}
 		return pro.size() > 0 ? pro : null;
+	}
+
+	/**
+	 * 获得2个JSON不同值的字段组
+	 */
+	public JSONArray<String> getNeField(JSONObject o, boolean struct) {
+		JSONArray<String> r = new JSONArray<>();
+		for (String key : keySet()) {
+			if (o.has(key)) {
+				var v1 = get(key);
+				if (v1 instanceof Integer v && v != o.getInt(key)) {
+					r.put(key);
+				} else if (v1 instanceof Long v && v != o.getLong(key)) {
+					r.put(key);
+				} else if (v1 instanceof Float v && v != o.getFloat(key)) {
+					r.put(key);
+				} else if (v1 instanceof Double v && v != o.getDouble(key)) {
+					r.put(key);
+				} else if (!v1.equals(o.getString(key))) {
+					r.put(key);
+				}
+			} else {
+				if (struct) {
+					r.put(key);
+				}
+			}
+		}
+		return r;
 	}
 }
