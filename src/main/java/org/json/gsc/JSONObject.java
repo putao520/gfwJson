@@ -646,14 +646,22 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 		for (String key : keySet()) {
 			if (o.has(key)) {
 				var v1 = get(key);
-				if (v1 instanceof Integer v && v != o.getInt(key)) {
-					r.put(key);
-				} else if (v1 instanceof Long v && v != o.getLong(key)) {
-					r.put(key);
-				} else if (v1 instanceof Float v && v != o.getFloat(key)) {
-					r.put(key);
-				} else if (v1 instanceof Double v && v != o.getDouble(key)) {
-					r.put(key);
+				if (v1 instanceof Integer v) {
+					if (v != o.getInt(key)) {
+						r.put(key);
+					}
+				} else if (v1 instanceof Long v) {
+					if (v != o.getLong(key)) {
+						r.put(key);
+					}
+				} else if (v1 instanceof Float v) {
+					if (v != o.getFloat(key)) {
+						r.put(key);
+					}
+				} else if (v1 instanceof Double v) {
+					if (v != o.getDouble(key)) {
+						r.put(key);
+					}
 				} else if (!v1.equals(o.getString(key))) {
 					r.put(key);
 				}
