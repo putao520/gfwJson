@@ -637,6 +637,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 	/**
 	 * 获得2个JSON不同值的字段组
 	 */
+	public JSONArray<String> getNeField(JSONObject o) {
+		return getNeField(o, false);
+	}
+
 	public JSONArray<String> getNeField(JSONObject o, boolean struct) {
 		JSONArray<String> r = new JSONArray<>();
 		for (String key : keySet()) {
