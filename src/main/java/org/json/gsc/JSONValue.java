@@ -337,6 +337,10 @@ public class JSONValue {
                 } else {
                     ri = Boolean.parseBoolean(v);
                 }
+            } else if (val instanceof Long l) {
+                ri = l == 1L;
+            } else if (val instanceof Integer l) {
+                ri = l == 1;
             } else {
                 ri = false;
             }
