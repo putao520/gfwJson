@@ -334,14 +334,13 @@ public class JSONValue {
         try {
             ri = (boolean) val;
         } catch (Exception e) {
-            if (val instanceof String) {
-                String v = (String) val;
+            if (val instanceof String v) {
                 if (v.equals("0")) {
                     ri = false;
                 } else if (v.equals("1")) {
                     ri = true;
                 } else {
-                    ri = Boolean.valueOf(v);
+                    ri = Boolean.parseBoolean(v);
                 }
             } else {
                 ri = false;
