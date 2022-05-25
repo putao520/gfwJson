@@ -31,9 +31,7 @@ public class JSONValue {
         StringReader in = new StringReader(s);
         try {
             return parseWithException(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
         return null;
@@ -207,12 +205,10 @@ public class JSONValue {
                     break;
                 default:
                     //Reference: http://www.unicode.org/versions/Unicode5.1.0/
-                    if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
+                    if (ch <= '\u001F' || ch >= '\u007F' && ch <= '\u009F' || ch >= '\u2000' && ch <= '\u20FF') {
                         String ss = Integer.toHexString(ch);
                         sb.append("\\u");
-                        for (int k = 0; k < 4 - ss.length(); k++) {
-                            sb.append('0');
-                        }
+                        sb.append("0".repeat(4 - ss.length()));
                         sb.append(ss.toUpperCase());
                     } else {
                         sb.append(ch);
@@ -242,8 +238,7 @@ public class JSONValue {
                 ri = ((BigInteger) val).intValue();
             }
 
-        } catch (Exception e) {
-            ri = 0;
+        } catch (Exception ignored) {
         }
         return ri;
     }
@@ -262,7 +257,7 @@ public class JSONValue {
             } else if (val instanceof JSONObject) {
                 ri = ((JSONObject) val).getDouble("$numberDouble");
             } else if (val instanceof String) {
-                ri = Double.valueOf((String) val).doubleValue();
+                ri = Double.parseDouble((String) val);
             } else if (val instanceof BigDecimal) {
                 ri = ((BigDecimal) val).doubleValue();
             } else if (val instanceof BigInteger) {
