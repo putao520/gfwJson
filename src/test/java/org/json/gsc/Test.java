@@ -89,16 +89,13 @@ public class Test extends TestCase {
 		catch(ParseException pe){
 			assertEquals(24, pe.getPosition());
 			System.out.println("Error at character position: " + pe.getPosition());
-			switch(pe.getErrorType()){
-			case ParseException.ERROR_UNEXPECTED_TOKEN:
-				System.out.println("Unexpected token: " + pe.getUnexpectedObject());
-				break;
-			case ParseException.ERROR_UNEXPECTED_CHAR:
-				System.out.println("Unexpected character: " + pe.getUnexpectedObject());
-				break;
-			case ParseException.ERROR_UNEXPECTED_EXCEPTION:
-				((Exception)pe.getUnexpectedObject()).printStackTrace();
-				break;
+			switch (pe.getErrorType()) {
+				case ParseException.ERROR_UNEXPECTED_TOKEN ->
+						System.out.println("Unexpected token: " + pe.getUnexpectedObject());
+				case ParseException.ERROR_UNEXPECTED_CHAR ->
+						System.out.println("Unexpected character: " + pe.getUnexpectedObject());
+				case ParseException.ERROR_UNEXPECTED_EXCEPTION ->
+						((Exception) pe.getUnexpectedObject()).printStackTrace();
 			}
 		}
 		
@@ -289,14 +286,14 @@ public class Test extends TestCase {
         }
 	}
 	
-	public void testEncode() throws Exception{
+	public void testEncode() throws Exception {
 		System.out.println("=======encode=======");
 
 		JSONArray array1 = new JSONArray();
 		array1.put("abc\u0010a/");
-		array1.put(new Integer(123));
-		array1.put(new Double(222.123));
-		array1.put(new Boolean(true));
+		array1.put(123);
+		array1.put(222.123);
+		array1.put(true);
 		System.out.println("======array1==========");
 		System.out.println(array1);
 		System.out.println();
@@ -318,17 +315,17 @@ public class Test extends TestCase {
 
 		List list = new ArrayList();
 		list.add("abc\u0010a/");
-		list.add(new Integer(123));
-		list.add(new Double(222.123));
-		list.add(new Boolean(true));
+		list.add(123);
+		list.add(222.123);
+		list.add(true);
 		list.add(null);
 		System.out.println("======list==========");
 		System.out.println(JSONArray.toJSONString(list));
 		System.out.println();
-		assertEquals("[\"abc\\u0010a\\/\",123,222.123,true,null]",JSONArray.toJSONString(list));
+		assertEquals("[\"abc\\u0010a\\/\",123,222.123,true,null]", JSONArray.toJSONString(list));
 
 		Map map = new HashMap();
-		map.put("array1",list);
+		map.put("array1", list);
 		System.out.println("======map with list===========");
 		System.out.println(map);
 		System.out.println();
@@ -349,28 +346,28 @@ public class Test extends TestCase {
         String jsonString = JSONValue.toJSONString(l1);
         System.out.println(jsonString);
         assertEquals("[{\"k11\":\"v11\",\"k12\":\"v12\",\"k13\":\"v13\"},{\"k21\":\"v21\",\"k22\":\"v22\",\"k23\":\"v23\"}]", jsonString);
-    
-        StringWriter out = new StringWriter();
-        JSONValue.writeJSONString(l1, out);
-        jsonString = out.toString();
-        System.out.println(jsonString);
-        assertEquals("[{\"k11\":\"v11\",\"k12\":\"v12\",\"k13\":\"v13\"},{\"k21\":\"v21\",\"k22\":\"v22\",\"k23\":\"v23\"}]", jsonString);
-        
-        List l2 = new LinkedList();
-        Map m3 = new LinkedHashMap();
-        m3.put("k31", "v3");
-        m3.put("k32", new Double(123.45));
-        m3.put("k33", new Boolean(false));
-        m3.put("k34", null);
-        l2.add("vvv");
-        l2.add("1.23456789123456789");
-        l2.add(new Boolean(true));
-        l2.add(null);
-        m3.put("k35", l2);
-        m1.put("k14", m3);
-        out = new StringWriter();
-        JSONValue.writeJSONString(l1, out);
-        jsonString = out.toString();
+
+		StringWriter out = new StringWriter();
+		JSONValue.writeJSONString(l1, out);
+		jsonString = out.toString();
+		System.out.println(jsonString);
+		assertEquals("[{\"k11\":\"v11\",\"k12\":\"v12\",\"k13\":\"v13\"},{\"k21\":\"v21\",\"k22\":\"v22\",\"k23\":\"v23\"}]", jsonString);
+
+		List l2 = new LinkedList();
+		Map m3 = new LinkedHashMap();
+		m3.put("k31", "v3");
+		m3.put("k32", 123.45);
+		m3.put("k33", false);
+		m3.put("k34", null);
+		l2.add("vvv");
+		l2.add("1.23456789123456789");
+		l2.add(true);
+		l2.add(null);
+		m3.put("k35", l2);
+		m1.put("k14", m3);
+		out = new StringWriter();
+		JSONValue.writeJSONString(l1, out);
+		jsonString = out.toString();
         System.out.println(jsonString);
         assertEquals("[{\"k11\":\"v11\",\"k12\":\"v12\",\"k13\":\"v13\",\"k14\":{\"k31\":\"v3\",\"k32\":123.45,\"k33\":false,\"k34\":null,\"k35\":[\"vvv\",\"1.23456789123456789\",true,null]}},{\"k21\":\"v21\",\"k22\":\"v22\",\"k23\":\"v23\"}]",jsonString);
     }

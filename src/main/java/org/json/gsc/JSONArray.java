@@ -7,6 +7,7 @@ package org.json.gsc;
 import org.json.gsc.parser.JSONParser;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.function.Function;
 
 public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamAware {
+    @Serial
     private static final long serialVersionUID = 3957988303675231981L;
     private LinkedHashMap<Object, JSONArray<JSONObject>> groups;
 
@@ -543,7 +545,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
             } else if (in instanceof Integer) {
                 r = (Integer) in;
             } else if (in instanceof String) {
-                r = Integer.valueOf(((String) in).trim());
+                r = Integer.parseInt(((String) in).trim());
             } else if (in instanceof Double) {
                 r = ((Double) in).intValue();
             } else if (in instanceof Float) {
@@ -573,7 +575,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
             } else if (in instanceof Integer) {
                 r = ((Integer) in).longValue();
             } else if (in instanceof String) {
-                r = Long.valueOf(((String) in).trim());
+                r = Long.parseLong(((String) in).trim());
             } else if (in instanceof Double) {
                 r = ((Double) in).longValue();
             } else if (in instanceof Float) {
@@ -603,7 +605,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
             } else if (in instanceof Integer) {
                 r = ((Integer) in).floatValue();
             } else if (in instanceof String) {
-                r = Float.valueOf(((String) in).trim());
+                r = Float.parseFloat(((String) in).trim());
             } else if (in instanceof Double) {
                 r = ((Double) in).floatValue();
             } else if (in instanceof Float) {
@@ -633,7 +635,7 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
             } else if (in instanceof Integer) {
                 r = ((Integer) in).doubleValue();
             } else if (in instanceof String) {
-                r = Double.valueOf(((String) in).trim());
+                r = Double.parseDouble(((String) in).trim());
             } else if (in instanceof Double) {
                 r = ((Double) in);
             } else if (in instanceof Float) {
@@ -732,7 +734,6 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
     public JSONArray<V> joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item) {
         if (foreignArray == null) {
             this.clear();
-            return this;
         } else {
             HashMap<Object, JSONObject> quickMap = new HashMap<>();
             Iterator it = foreignArray.iterator();
@@ -774,13 +775,12 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
                 }
             }
 
-            return this;
-
         }
+        return this;
     }
 
     private JSONArray<JSONObject> sortJsonArray(String field, int sort) {
-        JSONArray<JSONObject> newArray = new JSONArray<JSONObject>();
+        JSONArray<JSONObject> newArray = new JSONArray<>();
         Iterator<V> it = this.iterator();
         Iterator<V> it2;
         JSONObject item, item2;

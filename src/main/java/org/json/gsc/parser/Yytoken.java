@@ -23,32 +23,16 @@ public class Yytoken {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         switch (type) {
-            case TYPE_VALUE:
-                sb.append("VALUE(").append(value).append(")");
-                break;
-            case TYPE_LEFT_BRACE:
-                sb.append("LEFT BRACE({)");
-                break;
-            case TYPE_RIGHT_BRACE:
-                sb.append("RIGHT BRACE(})");
-                break;
-            case TYPE_LEFT_SQUARE:
-                sb.append("LEFT SQUARE([)");
-                break;
-            case TYPE_RIGHT_SQUARE:
-                sb.append("RIGHT SQUARE(])");
-                break;
-            case TYPE_COMMA:
-                sb.append("COMMA(,)");
-                break;
-            case TYPE_COLON:
-                sb.append("COLON(:)");
-                break;
-            case TYPE_EOF:
-                sb.append("END OF FILE");
-                break;
+            case TYPE_VALUE -> sb.append("VALUE(").append(value).append(")");
+            case TYPE_LEFT_BRACE -> sb.append("LEFT BRACE({)");
+            case TYPE_RIGHT_BRACE -> sb.append("RIGHT BRACE(})");
+            case TYPE_LEFT_SQUARE -> sb.append("LEFT SQUARE([)");
+            case TYPE_RIGHT_SQUARE -> sb.append("RIGHT SQUARE(])");
+            case TYPE_COMMA -> sb.append("COMMA(,)");
+            case TYPE_COLON -> sb.append("COLON(:)");
+            case TYPE_EOF -> sb.append("END OF FILE");
         }
         return sb.toString();
     }

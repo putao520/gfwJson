@@ -264,7 +264,7 @@ public class JSONArrayTest extends TestCase {
 		assertEquals("null", JSONArray.toJSONString((Object[]) null));
 		assertEquals("[]", JSONArray.toJSONString(new Object[0]));
 		assertEquals("[\"Hello\"]", JSONArray.toJSONString(new Object[]{"Hello"}));
-		assertEquals("[\"Hello\",12,[1,2,3]]", JSONArray.toJSONString(new Object[]{"Hello", new Integer(12), new int[]{1, 2, 3}}));
+		assertEquals("[\"Hello\",12,[1,2,3]]", JSONArray.toJSONString(new Object[]{"Hello", 12, new int[]{1, 2, 3}}));
 
 		StringWriter writer;
 
@@ -281,7 +281,7 @@ public class JSONArrayTest extends TestCase {
 		assertEquals("[\"Hello\"]", writer.toString());
 
 		writer = new StringWriter();
-		JSONArray.writeJSONString(new Object[]{"Hello", new Integer(12), new int[]{1, 2, 3}}, writer, 0);
+		JSONArray.writeJSONString(new Object[]{"Hello", 12, new int[]{1, 2, 3}}, writer, 0);
 		assertEquals("[\"Hello\",12,[1,2,3]]", writer.toString());
 	}
 

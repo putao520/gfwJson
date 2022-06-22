@@ -375,7 +375,7 @@ public class JSONValue {
         }
         if (val instanceof ArrayList<?>) {
             JSONArray rArray = new JSONArray<T>();
-            ((List<?>) val).forEach(e -> rArray.add(e));
+            ((List<?>) val).forEach(rArray::add);
             return rArray;
         }
         try {

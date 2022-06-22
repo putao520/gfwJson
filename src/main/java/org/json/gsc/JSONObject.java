@@ -7,6 +7,7 @@ package org.json.gsc;
 import org.json.gsc.parser.JSONParser;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
@@ -18,6 +19,7 @@ import java.util.*;
 
 public class JSONObject extends HashMap<String, Object> implements Map<String, Object>, JSONAware, JSONStreamAware, IJSONObject<JSONObject> {
 
+    @Serial
     private static final long serialVersionUID = -503443796854799292L;
 
     private final HashMap<String, String> mapTable = new HashMap<>();
@@ -60,14 +62,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         boolean first = true;
         Iterator iter = map.entrySet().iterator();
 
-        String format_end;
-        switch (format) {
-            case 1:
-                format_end = "\r\n";
-                break;
-            default:
-                format_end = "";
-        }
+        String format_end = format == 1 ? "\r\n" : "";
 
         out.write('{' + format_end);
         while (iter.hasNext()) {
@@ -456,10 +451,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
     }
 
     private String unionString(String[] strArray, String splitString) {
-        String rs = "";
+        StringBuilder rs = new StringBuilder();
         int l = strArray.length;
         for (int i = 1; i < l; i++) {
-            rs = rs + strArray[i] + splitString;
+            rs.append(strArray[i]).append(splitString);
         }
         return l > 1 ? rs.substring(0, rs.length() - splitString.length()) : strArray[0];
     }
@@ -482,7 +477,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
      * @param keys 外json key to 本json key
      * @return a json
      */
-    @SuppressWarnings("unchecked")
     public JSONObject mapKey(JSONObject keys) {
         for (String key : keys.keySet()) {
             mapTable.put(key, keys.getString(key));
@@ -524,23 +518,17 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
     public JSONObject link(String field, int idx) {
         JSONArray rArray = this.getJsonArray(field + "&Array");
-        if (JSONArray.isInvalided(rArray)) {
-            return this;
-        } else {
+        if (!JSONArray.isInvalided(rArray)) {
             JSONObject o = (JSONObject) rArray.get(idx);
-            if (isInvalided(o)) {
-                return this;
-            } else {
-                Iterator var5 = o.keySet().iterator();
+            if (!isInvalided(o)) {
 
-                while (var5.hasNext()) {
-                    String key = (String) var5.next();
+                for (String key : o.keySet()) {
                     this.put(field + "#" + key, o.get(key));
                 }
 
-                return this;
             }
         }
+        return this;
     }
 
     public boolean check(String k, Object v) {
@@ -557,8 +545,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         // if value is Json
         if (v instanceof JSONObject) {
             return (type != JSONObject.class) ? ((JSONObject) v).mapper(field.getType()) : v;
-        } else if (v instanceof JSONArray) {
-            JSONArray jsonArray = (JSONArray) v;
+        } else if (v instanceof JSONArray jsonArray) {
             if (type != JSONArray.class) {
                 List<Object> arrayList = new ArrayList<>();
                 for (Object i : jsonArray) {

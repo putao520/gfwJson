@@ -193,7 +193,7 @@ public class JsonStream implements Closeable {
         return toReader((in) -> {
             try {
                 in.reset();
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 int c;
                 do {
                     c = in.read();

@@ -1,9 +1,12 @@
 package org.json.gsc.parser;
 
+import java.io.Serial;
+
 public class ParseException extends Exception {
     public static final int ERROR_UNEXPECTED_CHAR = 0;
     public static final int ERROR_UNEXPECTED_TOKEN = 1;
     public static final int ERROR_UNEXPECTED_EXCEPTION = 2;
+    @Serial
     private static final long serialVersionUID = -7880698968187728547L;
     private int errorType;
     private Object unexpectedObject;
@@ -48,21 +51,16 @@ public class ParseException extends Exception {
     }
 
     public String getMessage() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         switch (errorType) {
-            case ERROR_UNEXPECTED_CHAR:
-                sb.append("Unexpected character (").append(unexpectedObject).append(") at position ").append(position).append(".");
-                break;
-            case ERROR_UNEXPECTED_TOKEN:
-                sb.append("Unexpected token ").append(unexpectedObject).append(" at position ").append(position).append(".");
-                break;
-            case ERROR_UNEXPECTED_EXCEPTION:
-                sb.append("Unexpected exception at position ").append(position).append(": ").append(unexpectedObject);
-                break;
-            default:
-                sb.append("Unkown error at position ").append(position).append(".");
-                break;
+            case ERROR_UNEXPECTED_CHAR ->
+                    sb.append("Unexpected character (").append(unexpectedObject).append(") at position ").append(position).append(".");
+            case ERROR_UNEXPECTED_TOKEN ->
+                    sb.append("Unexpected token ").append(unexpectedObject).append(" at position ").append(position).append(".");
+            case ERROR_UNEXPECTED_EXCEPTION ->
+                    sb.append("Unexpected exception at position ").append(position).append(": ").append(unexpectedObject);
+            default -> sb.append("Unkown error at position ").append(position).append(".");
         }
         return sb.toString();
     }

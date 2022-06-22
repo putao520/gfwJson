@@ -15,9 +15,7 @@ public class JSONObjectStreamTest extends TestCase {
         JSONObjectStream stream = new JSONObjectStream(file);
         try (stream) {
             stream.put("foo2", "bar");
-            stream.putJson("bar2", jsonStream -> {
-                jsonStream.put("foo", "bar22222");
-            });
+            stream.putJson("bar2", jsonStream -> jsonStream.put("foo", "bar22222"));
             stream.put("baz2", 312);
         }
         try (stream) {
@@ -45,9 +43,7 @@ public class JSONObjectStreamTest extends TestCase {
         }
         // 遍历
         try (stream) {
-            stream.forEach((key, value) -> {
-                System.out.println(key + ":" + value);
-            });
+            stream.forEach((key, value) -> System.out.println(key + ":" + value));
         }
         // 打印 stream
         try (stream) {
