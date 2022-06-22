@@ -14,15 +14,15 @@ import java.util.function.Function;
 public class JsonStream implements Closeable {
     protected final int bufferSize = 8192;
     private final char endSign;
+    private final BigJsonValue bigJsonValue;
     protected File file;
     protected Object constValue;
     // 是否是空文件
     protected boolean first = true;
-    // 是否最后一个字符需要替换
-    private boolean written = false;
-    private final BigJsonValue bigJsonValue;
     protected JsonInputStream jis;
     protected JsonOutputStream jos;
+    // 是否最后一个字符需要替换
+    private boolean written = false;
 
     public JsonStream(Object constValue, char endSign) {
         this.constValue = constValue;
