@@ -635,7 +635,11 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         for (String key : keySet()) {
             if (o.has(key)) {
                 var v1 = get(key);
-                if (v1 instanceof Integer v) {
+                if (v1 == null) {
+                    if (o.get(key) != null) {
+                        r.put(key);
+                    }
+                } else if (v1 instanceof Integer v) {
                     if (v != o.getInt(key)) {
                         r.put(key);
                     }
