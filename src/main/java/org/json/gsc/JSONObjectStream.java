@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * 文件流方式操作JSON文件，不提供完整的JSON接口
  */
 public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObjectStream> {
-
+    private final JSONObject cacheObject = JSONObject.build();
     public JSONObjectStream(File file) {
         super(file, '}', null);
     }
@@ -113,18 +113,22 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
     }
 
     public Object get(String key) {
+        if (cacheObject.has(key)) {
+            return cacheObject.get(key);
+        }
         // 重置
         return toReader((in) -> {
-            JSONObject rObject = JSONObject.build();
             JSONParser parser = new JSONParser(bufferSize);
             // 利用溢出时判断是否包含目标key,包含跳出解析（否则重用Map缓存）
             parser.onMapOverflow((map) -> map.get(key) != null);
             try {
-                rObject.put((JSONObject) parser.parse(in, (ContainerFactory) null, true));
+                cacheObject.put(
+                        (JSONObject) parser.parse(in, (ContainerFactory) null, true)
+                );
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
-            return rObject.get(key);
+            return cacheObject.get(key);
         });
     }
 

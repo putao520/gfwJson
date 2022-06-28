@@ -136,7 +136,7 @@ public class JsonStream implements Closeable {
 
     // ===Reader===================================================
     protected <T> T toReader(Function<BufferedReader, T> fn) {
-        T r;
+        T r = null;
         var br = getReader();
         try {
             if (bigJsonValue != null) {
@@ -146,10 +146,8 @@ public class JsonStream implements Closeable {
             }
             r = fn.apply(br);
             br.reset();
-
         } catch (IOException e) {
             // e.printStackTrace();
-            r = null;
         }
         return r;
     }
